@@ -1,52 +1,207 @@
-$(".leader").click(function() {
-  $(".position").html("<label>Position</label><p>Leader</p>");
-});
-$(".sub1").click(function() {
-  $(".position").html("<label>Position</label><p>Sub 1</p>");
-});
-$(".sub2").click(function() {
-  $(".position").html("<label>Position</label><p>Sub 2</p>");
-});
-$(".sub3").click(function() {
-  $(".position").html("<label>Position</label><p>Sub 3</p>");
-});
-$(".helper").click(function() {
-  $(".position").html("<label>Position</label><p>Helper</p>");
-});
-
-
-$("#add-daemon").click(function() {
-  event.preventDefault();
-  var dataString = "";
-  
-  var position = $(".position p").text();
-
-  var type;
-  
-  switch($("#type").val()) {
-    case "melee":
-      type = new DaemonType("melee",0.2);
-      break;
-    case "ranged":
-      type = new DaemonType("ranged", 0.4);
-      break;
+//Remember any set daemons on refresh
+$(document).ready(function() {
+  if(sessionStorage.getItem("set-leader") == "true") {
+    fillModal("leader");
+    printData("leader");
   }
+  if(sessionStorage.getItem("set-sub1") == "true") {
+    fillModal("sub1");
+    printData("sub1");
+  }
+  if(sessionStorage.getItem("set-sub2") == "true") {
+    fillModal("sub2");
+    printData("sub2");
+  }
+  if(sessionStorage.getItem("set-sub3") == "true") {
+    fillModal("sub3");
+    printData("sub3");
+  }
+  if(sessionStorage.getItem("set-helper") == "true") {
+    fillModal("helper");
+    printData("helper");
+  }  
+})
+
+//Populate modal for daemons already set
+$(".leader .photo").click(function() {
+  $(".position").html("<label>Position</label><p>Leader</p>");
+  if(sessionStorage.getItem("set-leader") == "true") {
+    $("#add-daemon").hide();
+    $("#remove-daemon").show();
+    $("#edit-daemon").show();
+    fillModal("leader");
+  } else {
+    $("#add-daemon").show();
+    $("#remove-daemon").hide();
+    $("#edit-daemon").hide();
+    clearModal();
+  }
+});
+$(".sub1 .photo").click(function() {
+  $(".position").html("<label>Position</label><p>Sub 1</p>");
+  if(sessionStorage.getItem("set-sub1") == "true") {
+    $("#add-daemon").hide();
+    $("#remove-daemon").show();
+    $("#edit-daemon").show();
+    fillModal("sub1");
+  } else {
+    $("#add-daemon").show();
+    $("#remove-daemon").hide();
+    $("#edit-daemon").hide();
+    clearModal();
+  }  
+});
+$(".sub2 .photo").click(function() {
+  $(".position").html("<label>Position</label><p>Sub 2</p>");
+  if(sessionStorage.getItem("set-sub2") == "true") {
+    $("#add-daemon").hide();
+    $("#remove-daemon").show();
+    $("#edit-daemon").show();
+    fillModal("sub2");
+  } else {
+    $("#add-daemon").show();
+    $("#remove-daemon").hide();
+    $("#edit-daemon").hide();
+    clearModal();
+  }    
+});
+$(".sub3 .photo").click(function() {
+  $(".position").html("<label>Position</label><p>Sub 3</p>");
+  if(sessionStorage.getItem("set-sub3") == "true") {
+    $("#add-daemon").hide();
+    $("#remove-daemon").show();
+    $("#edit-daemon").show();
+    fillModal("sub3");
+  } else {
+    $("#add-daemon").show();
+    $("#remove-daemon").hide();
+    $("#edit-daemon").hide();
+    clearModal();
+  }    
+});
+$(".helper .photo").click(function() {
+  $(".position").html("<label>Position</label><p>Helper</p>");
+  if(sessionStorage.getItem("set-helper") == "true") {
+    $("#add-daemon").hide();
+    $("#remove-daemon").show();
+    $("#edit-daemon").show();
+    fillModal("helper");
+  } else {
+    $("#add-daemon").show();
+    $("#remove-daemon").hide();
+    $("#edit-daemon").hide();
+    clearModal();
+  }    
+});
+
+function removeData(position) {
+  removePhoto(position);
+  $("." + position + " .stats").html("");
+}
+
+function printData(position) {
+  setPhoto(position);
+  $("." + position + " .stats").html("");
+  $("." + position + " .stats").html(getDataString);
+}
+
+function removePhoto(position) {
+  $("." + position + " .photo").addClass("dashed");
+  $("." + position + " .photo").html("");
+  $("." + position + " .photo").html("<span>+</span>");
+}
+
+function setPhoto(position) {
+  $("." + position + " .photo").removeClass("dashed");
+  $("." + position + " .photo span").replaceWith("<img src=\"images/Blank.png\">");
+}
+
+function storeSessionData(position) {
   
+  var pos;
+  
+  switch(position) {
+    case "Leader":
+      pos = "leader";
+      break;
+    case "Sub 1":
+      pos = "sub1";
+      break;
+    case "Sub 2":
+      pos = "sub2";
+      break;
+    case "Sub 3":
+      pos = "sub3";
+      break;
+    case "Helper": {
+      pos = "helper";
+      break;
+    }
+  }
+
+  sessionStorage.setItem(pos + "-role",$("#role").val());
+  sessionStorage.setItem(pos + "-type",$("#type").val());
+  sessionStorage.setItem(pos + "-atk",$("#atk").val());
+  sessionStorage.setItem(pos + "-hp",$("#hp").val());
+  sessionStorage.setItem(pos + "-skill-dmg",$("#skill-dmg").val());
+  sessionStorage.setItem(pos + "-targets",$("#targets").val());
+  sessionStorage.setItem(pos + "-buff-type",$("#buff-type").val());
+  sessionStorage.setItem(pos + "-buff-num-type",$("#buff-num-type").val());
+  sessionStorage.setItem(pos + "-buff-val",$("#buff-val").val());
+  sessionStorage.setItem(pos + "-debuff-type",$("#debuff-type").val());
+  sessionStorage.setItem(pos + "-debuff-val",$("#debuff-val").val());
+  sessionStorage.setItem(pos + "-bond-1",$("#bond-1").val());
+  sessionStorage.setItem(pos + "-bond-2",$("#bond-2").val());
+  sessionStorage.setItem(pos + "-bond-3",$("#bond-3").val());
+}
+
+function clearModal() {
+  $("#role").val("");
+  $("#type").val("");
+  $("#atk").val("");
+  $("#hp").val("");
+  $("#skill-dmg").val("");
+  $("#targets").val("");
+  $("#buff-type").val("");
+  $("#buff-num-type").val("");
+  $("#buff-val").val("");
+  $("#debuff-type").val("");
+  $("#debuff-val").val("");
+  $("#bond-1").val("");
+  $("#bond-2").val("");
+  $("#bond-3").val("");  
+}
+
+function fillModal(pos) {
+  $("#role").val(sessionStorage.getItem(pos + "-role"));
+  $("#type").val(sessionStorage.getItem(pos + "-type"));
+  $("#atk").val(sessionStorage.getItem(pos + "-atk"));
+  $("#hp").val(sessionStorage.getItem(pos + "-hp"));
+  $("#skill-dmg").val(sessionStorage.getItem(pos + "-skill-dmg"));
+  $("#targets").val(sessionStorage.getItem(pos + "-targets"));
+  $("#buff-type").val(sessionStorage.getItem(pos + "-buff-type"));
+  $("#buff-num-type").val(sessionStorage.getItem(pos + "-buff-num-type"));
+  $("#buff-val").val(sessionStorage.getItem(pos + "-buff-val"));
+  $("#debuff-type").val(sessionStorage.getItem(pos + "-debuff-type"));
+  $("#debuff-val").val(sessionStorage.getItem(pos + "-debuff-val"));
+  $("#bond-1").val(sessionStorage.getItem(pos + "-bond-1"));
+  $("#bond-2").val(sessionStorage.getItem(pos + "-bond-2"));
+  $("#bond-3").val(sessionStorage.getItem(pos + "-bond-3"));
+}
+
+function getDataString() {
+  
+  var role = $("#role").val();
+  var type = $("#type").val();
   var atk = $("#atk").val();
   var hp = $("#hp").val();
-  
-  var skillDmg = $("#daemon-form #skill-dmg").val();
+  var skillDmg = $("#skill-dmg").val();  
   
   if(skillDmg == "") {
     skillDmg = 0;
-  }
+  } 
   
-  dataString += "<h5>Type: " + $("#type").val() + "</h5>"
-              + "<h5> Attack: " + atk + "</h5>"
-              + "<h5> HP: " + hp + "</h5>"
-              + "<h5>Skill Dmg: " + skillDmg + "</h5>";  
-  
-  var targets;
+  var targets= $("#targets").val();
   
   switch($("#targets").val()) {
     case "target-1":
@@ -63,98 +218,227 @@ $("#add-daemon").click(function() {
   }
   
   var sortOrder = $("#sort-order").val();
+  var buffType = $("#buff-type").val();
+  var buffVal = parseInt($("#buff-val").val())/100;
+  var bond1 = parseInt($("#bond-1").val());
+  var bond2 = parseInt($("#bond-2").val());
+  var bond3 = parseInt($("#bond-3").val());
   
-  if(sortOrder !== "HIGH_ATK") {
-    sortOrder = null;
+  if(isNaN(bond1)) {
+    bond1 = 0;
   }
+  if(isNaN(bond2)) {
+    bond2 = 0;
+  }
+  if(isNaN(bond3)) {
+    bond3 = 0;
+  }
+  
+  return "<h5>Role: " + role + "</h5>"
+        +"<h5>Type: " + type + "</h5>"
+        +"<h5>ATK: " + atk + "</h5>"
+        +"<h5>HP: " + hp + "</h5>"
+        +"<h5>Skill DMG: " + skillDmg + "</h5>"
+        +"<h5>Targets: " + targets + "</h5>"
+        +"<h5>Sort Order: " + sortOrder + "</h5>"
+        +"<h5>Buff Type: " + buffType + "</h5>"
+        +"<h5>Buff Value: " + buffVal + "</h5>"
+        +"<h5>First Bond: " + bond1 + "</h5>"
+        +"<h5>Second Bond: " + bond2 + "</h5>"
+        +"<h5>Third Bond: " + bond3 + "</h5>"
+}
+
+function removeDaemon(position) {
+  sessionStorage.setItem("set-" + position, "false");
+  removeData(position);
+}
+
+function addDaemon(position) {
+
+  var role;
+  
+  switch($("#role").val()) {
+    case "melee":
+      role = new DaemonRole("melee",0.2);
+      break;
+    case "ranged":
+      role = new DaemonRole("ranged", 0.4);
+      break;
+  }
+  
+  var type;
+
+   switch($("#type").val()) {
+    case "Phantasma":
+      type = "P";
+      break;
+    case "Anima":
+      type = "A";
+      break;
+    case "Divina":
+      type = "D";
+      break;
+  }  
+  
+  var skillDmg = $("#skill-dmg").val();
+  
+  if(skillDmg == "") { skillDmg = 0; }
+  
+  var bond1 = parseInt($("#bond-1").val());
+  var bond2 = parseInt($("#bond-2").val());
+  var bond3 = parseInt($("#bond-3").val());
+  
+  if(isNaN(bond1)) {
+    bond1 = 0;
+  }
+  if(isNaN(bond2)) {
+    bond2 = 0;
+  }
+  if(isNaN(bond3)) {
+    bond3 = 0;
+  }  
   
   var buffType = $("#buff-type").val();
   var buffVal;
   
   if(buffType !== "") {
     buffVal = parseInt($("#buff-val").val())/100;
-    dataString += "<h5>Buff Type: " + buffType + "</h5>"
-                + "<h5>Buff Val: " + buffVal + "</h5>";
-  }  
-
-  var bond1 = parseInt($("#bond-1").val());
-  var bond2 = parseInt($("#bond-2").val());
-  var bond3 = parseInt($("#bond-3").val());
+  }    
   
-  if(!isNaN(bond1)) {
-    dataString += "<h5>First Bond: " + bond1 + "</h5>";
+  var targets;
+
+  switch($("#targets").val()) {
+    case "target-1":
+      targets = 1;
+      break;
+    case "target-2":
+      targets = 2;
+      break;
+    case "target-3":
+      targets = 3;
+      break;
+    case "target-all":
+      targets = 5;
+  }  
+  
+  var sortOrder = $("#sort-order").val();
+  
+  if(sortOrder !== "HIGH_ATK") {
+    sortOrder = null;
+  }  
+  
+  if(buffType == "") {
+    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], []);
   } else {
-    bond1 = 0;
+    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
   }
-  if(!isNaN(bond2)) {
-    dataString += "<h5>Second Bond: " + bond2 + "</h5>";
-  } else {
-    bond2 = 0;
-  }
-  if(!isNaN(bond3)) {
-    dataString += "<h5>Third Bond: " + bond3 + "</h5>";
-  } else {
-    bond3 = 0;
-  }
+}
+
+$("#remove-daemon").click(function(event) {
+  event.preventDefault();
+  
+  var position = $(".position p").text();
   
   if(position == "Leader") {
-    $(".leader .photo span").replaceWith("<img src=\"images/Blank.png\">");
-    $(".leader .photo").removeClass("dashed");
-    $(".leader .stats").html("");
-    $(".leader .stats").html(dataString);
-    if(buffType !== "") {
-      daemons["L"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
-    } else {
-      daemons["L"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
-    }
+    removeDaemon("leader");
   } else if(position == "Sub 1") {
-    $(".sub1 .photo span").replaceWith("<img src=\"images/Blank.png\">");
-    $(".sub1 .photo").removeClass("dashed");
-    $(".sub1 .stats").html("");
-    $(".sub1 .stats").html(dataString);  
-    if(buffType !== "") {
-      daemons["S1"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
-    } else {
-      daemons["S1"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
-    }
+    removeDaemon("sub1");
   } else if(position == "Sub 2") {
-    $(".sub2 .photo span").replaceWith("<img src=\"images/Blank.png\">");
-    $(".sub2 .photo").removeClass("dashed");
-    $(".sub2 .stats").html("");
-    $(".sub2 .stats").html(dataString);
-    if(buffType !== "") {
-      daemons["S2"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
-    } else {
-      daemons["S2"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
-    }
+    removeDaemon("sub2");
   } else if(position == "Sub 3") {
-    $(".sub3 .photo span").replaceWith("<img src=\"images/Blank.png\">");
-    $(".sub3 .photo").removeClass("dashed");
-    $(".sub3 .stats").html("");
-    $(".sub3 .stats").html(dataString);  
-    if(buffType !== "") {
-      daemons["S3"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
-    } else {
-      daemons["S3"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
-    }
+    removeDaemon("sub3");
   } else {
-    $(".helper .photo span").replaceWith("<img src=\"images/Blank.png\">");
-    $(".helper .photo").removeClass("dashed");
-    $(".helper .stats").html("");
-    $(".helper .stats").html(dataString);    
-    if(buffType !== "") {
-      daemons["H"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
-    } else {
-      daemons["H"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
-    }
+    removeDaemon("helper");
+  }
+
+  $(".modal").modal('hide');
+  $('#daemon-form').find('input,select').val('');    
+})
+
+$("#edit-daemon").click(function(event) {
+  event.preventDefault();
+  
+  var position = $(".position p").text();
+  
+  if(position == "Leader") {
+    storeSessionData(position);
+    printData("leader");
+  } else if(position == "Sub 1") {
+    storeSessionData(position);
+    printData("sub1");
+  } else if(position == "Sub 2") {
+    storeSessionData(position);
+    printData("sub2");
+  } else if(position == "Sub 3") {
+    storeSessionData(position);
+    printData("sub3");
+  } else {
+    storeSessionData(position);
+    printData("helper");
+  }
+  
+  $(".modal").modal('hide');
+  $('#daemon-form').find('input,select').val('');  
+});
+
+$("#add-daemon").click(function(event) {
+  event.preventDefault();
+  
+  var position = $(".position p").text();
+  
+  storeSessionData(position);
+  
+  if(position == "Leader") {
+    printData("leader");
+    sessionStorage.setItem("set-leader","true");
+  } else if(position == "Sub 1") {
+    printData("sub1");
+    sessionStorage.setItem("set-sub1","true");
+  } else if(position == "Sub 2") {
+    printData("sub2");
+    sessionStorage.setItem("set-sub2","true");
+  } else if(position == "Sub 3") {
+    printData("sub3");
+    sessionStorage.setItem("set-sub3","true");
+  } else {
+    printData("helper");
+    sessionStorage.setItem("set-helper","true");
   }
   
   $(".modal").modal('hide');
   $('#daemon-form').find('input,select').val('');
 });
 
-$("#submit-seq").click(function() {
+
+
+$("#submit-seq").click(function(event) {
   event.preventDefault();
+  
+  if(sessionStorage.getItem("set-leader") == "true") {
+    fillModal("leader");
+    addDaemon("L");
+    clearModal();
+  }
+  if(sessionStorage.getItem("set-sub1") == "true") {
+    fillModal("sub1");
+    addDaemon("S1");
+    clearModal();    
+  }
+  if(sessionStorage.getItem("set-sub2") == "true") {
+    fillModal("sub2");
+    addDaemon("S2");
+    clearModal();    
+  }
+  if(sessionStorage.getItem("set-sub3") == "true") {
+    fillModal("sub3");
+    addDaemon("S3");
+    clearModal();    
+  }
+  if(sessionStorage.getItem("set-helper") == "true") {
+    fillModal("helper");
+    addDaemon("H");
+    clearModal();     
+  }  
   
   var seqInput = $("#skill-sequence").val().split(',');
   

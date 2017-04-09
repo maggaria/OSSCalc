@@ -44,23 +44,32 @@
         <div class="modal-body">
           <div class="row">
             <div class="position col-md-12">
-              <label>Position</label>
+              <label>Position</label><p>Leader</p>
             </div>
           </div>
           <div class="row">
-            <div class="form-group col-xs-12 col-md-4">
-              <label>Type</label>
-              <select id="type" class="form-control">
+              <div class="form-group col-xs-12 col-md-3">
+              <label>Role</label>
+              <select id="role" class="form-control">
                 <option value="">-- Select --</option>
                 <option value="melee">Melee</option>
                 <option value="ranged">Ranged</option>
               </select>
+            </div>          
+            <div class="form-group col-xs-12 col-md-3">
+              <label>Type</label>
+              <select id="type" class="form-control">
+                <option value="">-- Select --</option>
+                <option value="Anima">Anima</option>
+                <option value="Divina">Divina</option>
+                <option value="Phantasma">Phantasma</option>
+              </select>
             </div>
-            <div class="form-group col-xs-12 col-md-4">
+            <div class="form-group col-xs-12 col-md-3">
               <label>ATK</label>
               <input id="atk" type="number" class="form-control" name="atk" placeholder="0">
             </div>
-            <div class="form-group col-xs-12 col-md-4">
+            <div class="form-group col-xs-12 col-md-3">
               <label>HP</label>
               <input id="hp" type="number" class="form-control" name="hp" placeholder="0">
             </div>            
@@ -87,9 +96,9 @@
               <label>Buff Type</label>
               <select id="buff-type" class="form-control">
                 <option value="">-- Select --</option>
-                <option value="dmg-buff">DMG Buff</option>
+                <option value="DMG_DEALT">DMG Buff</option>
                 <option value="CRIT_RATE">Crit Rate Buff</option>
-                <option value="crit-dmg-buff">Crit DMG Buff</option>
+                <option value="CRIT_DMG">Crit DMG Buff</option>
               </select>                
               <label>Buff Num Type</label>
               <select id="buff-num-type" class="form-control">
@@ -147,18 +156,17 @@
         </div>
         <div class="modal-footer">
           <button id="add-daemon" type="submit" class="btn btn-primary" value="submit">Add Daemon</button>
+          <button id="remove-daemon" type="submit" class="btn btn-danger" value="submit">Remove Daemon</button>
+          <button id="edit-daemon" type="submit" class="btn btn-primary" value="submit">Edit Daemon</button>
         </div>
         </form>
       </div>
     </div>
-      <button class="close" data-dismiss="modal">Close</button>
   </div>
-
-  <script>
-    var leader, sub1, sub2, sub3, helper;
-  </script>
+  
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  
   <script src="js/types.js"></script>
   <script src="js/helper.js"></script>
   <script src="js/ssc.js"></script>

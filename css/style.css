@@ -29,6 +29,9 @@ body {
   border-color: gray;
   color: gray; }
 
+img:hover {
+  opacity: 0.8; }
+
 .dashed {
   border: 1px dashed white; }
 
@@ -40,6 +43,9 @@ body {
   color: #291626; }
   .modal label {
     margin-top: 0.5em; }
+
+#edit-daemon {
+  display: none; }
 
 #submit-seq {
   margin-top: 1em; }

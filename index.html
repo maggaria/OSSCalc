@@ -25,7 +25,10 @@
       <p>L = Leader, S1 = Sub 1, S2 = Sub 2, S3 = Sub 3, H = Helper</p>
       <p>Separate each daemon with a comma (ie: L,H,S1,H,S2)</p>
       <input id="skill-sequence" class="form-control" type="text">
-      <button id="submit-seq" type="submit" class="btn btn-primary" value="submit">Run Sequence</button>
+      <div class="row">
+        <button id="submit-seq" type="submit" class="btn btn-primary action-button" value="submit">Run Sequence</button>
+        <button id="optimize-seq" class="btn btn-primary action-button">Optimize</button>
+      </div>
     </form>
   </div>
   
@@ -48,7 +51,7 @@
             </div>
           </div>
           <div class="row">
-              <div class="form-group col-xs-12 col-md-3">
+            <div class="form-group col-xs-12 col-md-3">
               <label>Role</label>
               <select id="role" class="form-control">
                 <option value="">-- Select --</option>

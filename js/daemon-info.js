@@ -133,11 +133,35 @@ function storeSessionData(position) {
     case "Sub 3":
       pos = "sub3";
       break;
-    case "Helper": {
+    case "Helper":
       pos = "helper";
       break;
-    }
   }
+
+  var role;
+  
+  switch($("#role").val()) {
+    case "melee":
+      role = new DaemonRole("melee",0.2);
+      break;
+    case "ranged":
+      role = new DaemonRole("ranged", 0.4);
+      break;
+  }
+
+  var type;
+
+ switch($("#type").val()) {
+  case "Phantasma":
+    type = "P";
+    break;
+  case "Anima":
+    type = "A";
+    break;
+  case "Divina":
+    type = "D";
+    break;
+ }
 
   sessionStorage.setItem(pos + "-role",$("#role").val());
   sessionStorage.setItem(pos + "-type",$("#type").val());
@@ -201,8 +225,8 @@ function getDataString() {
     skillDmg = 0;
   } 
   
-  var targets= $("#targets").val();
-  
+  var targets;
+
   switch($("#targets").val()) {
     case "target-1":
       targets = 1;
@@ -403,7 +427,7 @@ $("#add-daemon").click(function(event) {
   } else {
     printData("helper");
     sessionStorage.setItem("set-helper","true");
-  }
+  } 
   
   $(".modal").modal('hide');
   $('#daemon-form').find('input,select').val('');
@@ -443,6 +467,53 @@ $("#submit-seq").click(function(event) {
   var seqInput = $("#skill-sequence").val().split(',');
   
   var result = run_calc(seqInput);
+  var shards = n_shards(seqInput);
+
+  var shardstring = "";
+  for (var i = 0; i < shards; i++) {
+    shardstring += "&#9679;";
+  }
   
-  $(".result").text("Result: " + result);
+  $(".result").html("Result: " + result + " (<span style='color:#55AEFE;'>" + shardstring + "</span>)");
 });
+
+$("#optimize-seq").click(function() {
+  event.preventDefault();
+
+  if(sessionStorage.getItem("set-leader") == "true") {
+    fillModal("leader");
+    addDaemon("L");
+    clearModal();
+  }
+  if(sessionStorage.getItem("set-sub1") == "true") {
+    fillModal("sub1");
+    addDaemon("S1");
+    clearModal();    
+  }
+  if(sessionStorage.getItem("set-sub2") == "true") {
+    fillModal("sub2");
+    addDaemon("S2");
+    clearModal();    
+  }
+  if(sessionStorage.getItem("set-sub3") == "true") {
+    fillModal("sub3");
+    addDaemon("S3");
+    clearModal();    
+  }
+  if(sessionStorage.getItem("set-helper") == "true") {
+    fillModal("helper");
+    addDaemon("H");
+    clearModal();     
+  }    
+  
+  var seqInput = $("#skill-sequence").val().split(',');
+  var origDmg = run_calc(seqInput);
+
+  var result = find_best(uniquePermute(seqInput));
+  var resultDmg = run_calc(result);
+
+  var dmgDiff = resultDmg - origDmg;
+  var dmgDiffString = (dmgDiff > 0)? "<span style='color:green'>+" + (dmgDiff|0).toString() + "</span>" : "<span style='color:red'>" + (dmgDiff|0).toString() + "</span>";
+
+  $(".result").html("Best Sequence: " + result.join(" ") + " <br>Expected Damage: " + (resultDmg|0) + " (" + dmgDiffString + ")");
+})

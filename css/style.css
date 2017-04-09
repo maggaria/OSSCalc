@@ -50,6 +50,10 @@ img:hover {
 #submit-seq {
   margin-top: 1em; }
 
+.action-button {
+  margin-top: 1em;
+}
+
 .result {
   padding: 2em;
   font-weight: bold; }

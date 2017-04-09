@@ -1,0 +1,62 @@
+body {
+  margin: 5em 0;
+  font-family: Arial, sans-serif;
+  background: #291626 !important;
+  color: #fff !important;
+  text-align: center;
+}
+
+.team {
+  display: flex;
+  width: 50%;
+  margin: 2em auto;
+}
+
+.daemon {
+  flex-basis: 20%;
+}
+
+.photo {
+  box-sizing: border-box;
+  width: 80%;
+  margin: 0 auto;
+  height: 8em;
+  span {
+    font-size: 3em;
+    transform: translateY(3em);
+  }
+  img {
+    width: 90%;
+  }
+}
+
+.photo:hover {
+  cursor: pointer;
+  border-color: gray;
+  color: gray;
+}
+
+.dashed {
+  border: 1px dashed white;
+}
+
+.sequence {
+  width: 50%;
+  margin: 0 auto;
+}
+
+.modal {
+  color: #291626;
+  label {
+    margin-top: 0.5em;
+  }
+}
+
+#submit-seq {
+  margin-top: 1em;
+}
+
+.result {
+  padding: 2em;
+  font-weight: bold;
+}

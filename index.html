@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">  
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+
+  <h1>Otogi Skill Sequence Calculator</h1>
+  
+  <div class="team">
+    <div class="daemon leader" data-toggle="modal" data-target="#daemon-form"><div class="photo dashed"><span>+</span></div><h4>Leader</h4><div class="stats"></div></div>
+    <div class="daemon sub1" data-toggle="modal" data-target="#daemon-form"><div class="photo dashed"><span>+</span></div><h4>Sub 1</h4><div class="stats"></div></div>
+    <div class="daemon sub2" data-toggle="modal" data-target="#daemon-form"><div class="photo dashed"><span>+</span></div><h4>Sub 2</h4><div class="stats"></div></div>
+    <div class="daemon sub3" data-toggle="modal" data-target="#daemon-form"><div class="photo dashed"><span>+</span></div><h4>Sub 3</h4><div class="stats"></div></div>
+    <div class="daemon helper" data-toggle="modal" data-target="#daemon-form"><div class="photo dashed"><span>+</span></div><h4>Helper</h4><div class="stats"></div></div>    
+  </div>
+
+  <div class="sequence">
+    <form>
+      <label>Skill Sequence</label>
+      <p>L = Leader, S1 = Sub 1, S2 = Sub 2, S3 = Sub 3, H = Helper</p>
+      <p>Separate each daemon with a comma (ie: L,H,S1,H,S2)</p>
+      <input id="skill-sequence" class="form-control" type="text">
+      <button id="submit-seq" type="submit" class="btn btn-primary" value="submit">Run Sequence</button>
+    </form>
+  </div>
+  
+  <div class="result">
+  
+  </div>
+  
+  <div class="modal fade" id="daemon-form">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Enter Daemon Info</h4>
+        </div>
+        <form>
+        <div class="modal-body">
+          <div class="row">
+            <div class="position col-md-12">
+              <label>Position</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-xs-12 col-md-4">
+              <label>Type</label>
+              <select id="type" class="form-control">
+                <option value="">-- Select --</option>
+                <option value="melee">Melee</option>
+                <option value="ranged">Ranged</option>
+              </select>
+            </div>
+            <div class="form-group col-xs-12 col-md-4">
+              <label>ATK</label>
+              <input id="atk" type="number" class="form-control" name="atk" placeholder="0">
+            </div>
+            <div class="form-group col-xs-12 col-md-4">
+              <label>HP</label>
+              <input id="hp" type="number" class="form-control" name="hp" placeholder="0">
+            </div>            
+          </div>
+          <div class="row">
+            <div class="form-group col-xs-6 col-md-4">
+              <label>Skill DMG</label><input id="skill-dmg" type="number" class="form-control" name="skill-dmg" placeholder="0">
+              <label>Number of Targets</label>
+              <select id="targets" class="form-control">
+                <option value="">-- Select --</option>
+                <option value="target-1">1</option>
+                <option value="target-2">2</option>
+                <option value="target-3">3</option>
+                <option value="target-all">All</option>
+              </select>
+              <label>Target Condition</label>
+              <select id="sort-order" class="form-control">
+                <option value="">-- Select --</option>
+                <option value="HIGH_ATK">Highest ATK</option>
+                <option value="HIGH_HP">Highest HP</option>
+              </select>                
+            </div>
+            <div class="form-group col-xs-6 col-md-4">
+              <label>Buff Type</label>
+              <select id="buff-type" class="form-control">
+                <option value="">-- Select --</option>
+                <option value="dmg-buff">DMG Buff</option>
+                <option value="CRIT_RATE">Crit Rate Buff</option>
+                <option value="crit-dmg-buff">Crit DMG Buff</option>
+              </select>                
+              <label>Buff Num Type</label>
+              <select id="buff-num-type" class="form-control">
+                <option value="">-- Select --</option>
+                <option value="int-buff">Integer</option>
+                <option value="percent-buff">Percent</option>
+              </select>
+              <label>Buff Value</label><input id="buff-val" class="form-control" type="number" name="buff-val" placeholder="0"> 
+            </div>
+            <div class="form-group col-xs-6 col-md-4">
+              <label>Debuff Type</label>
+              <select id="debuff-type" class="form-control">
+                <option value="">-- Select --</option>
+                <option value="int-debuff">Integer</option>
+                <option value="percent-debuff">Percent</option>
+              </select>
+              <label>Debuff Value</label><input class="form-control" type="number" name="debuff-val" placeholder="0">
+            </div>
+          </div>
+          <div class="row">
+            <div class="form-group col-xs-6 col-md-4">
+              <label>First Bond</label>
+              <select id="bond-1" class="form-control">
+                <option value="">-- Select --</option>
+                <option val="star-1">1 star</option>
+                <option val="star-2">2 star</option>
+                <option val="star-3">3 star</option>
+                <option val="star-4">4 star</option>
+                <option val="star-5">5 star</option>
+              </select>                
+            </div>
+            <div class="form-group col-xs-6 col-md-4">
+              <label>Second Bond</label>
+              <select id="bond-2" class="form-control">
+                <option value="">-- Select --</option>
+                <option val="star-1">1 star</option>
+                <option val="star-2">2 star</option>
+                <option val="star-3">3 star</option>
+                <option val="star-4">4 star</option>
+                <option val="star-5">5 star</option>
+              </select>                
+            </div>
+            <div class="form-group col-xs-6 col-md-4">
+              <label>Third Bond</label>
+              <select id="bond-3" class="form-control">
+                <option value="">-- Select --</option>
+                <option val="star-1">1 star</option>
+                <option val="star-2">2 star</option>
+                <option val="star-3">3 star</option>
+                <option val="star-4">4 star</option>
+                <option val="star-5">5 star</option>
+              </select>                     
+            </div>
+          </div>       
+        </div>
+        <div class="modal-footer">
+          <button id="add-daemon" type="submit" class="btn btn-primary" value="submit">Add Daemon</button>
+        </div>
+        </form>
+      </div>
+    </div>
+      <button class="close" data-dismiss="modal">Close</button>
+  </div>
+
+  <script>
+    var leader, sub1, sub2, sub3, helper;
+  </script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.0/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="js/types.js"></script>
+  <script src="js/helper.js"></script>
+  <script src="js/ssc.js"></script>
+  <script src="js/daemon-info.js"></script>
+</body>
+  
+</html>

@@ -21,14 +21,28 @@ $("#add-daemon").click(function() {
   
   var position = $(".position p").text();
 
-  var type;
+  var role;
   
-  switch($("#type").val()) {
+  switch($("#role").val()) {
     case "melee":
-      type = new DaemonType("melee",0.2);
+      type = new DaemonRole("melee",0.2);
       break;
     case "ranged":
-      type = new DaemonType("ranged", 0.4);
+      type = new DaemonRole("ranged", 0.4);
+      break;
+  }
+
+  var type;
+
+   switch($("#type").val()) {
+    case "Phantasma":
+      type = "P";
+      break;
+    case "Anima":
+      type = "A";
+      break;
+    case "Divina":
+      type = "D";
       break;
   }
   
@@ -41,7 +55,8 @@ $("#add-daemon").click(function() {
     skillDmg = 0;
   }
   
-  dataString += "<h5>Type: " + $("#type").val() + "</h5>"
+  dataString += "<h5>Role: " + $("#role").val() + "</h5>"
+              + "<h5>Type: " + $("#type").val() + "</h5>"
               + "<h5> Attack: " + atk + "</h5>"
               + "<h5> HP: " + hp + "</h5>"
               + "<h5>Skill Dmg: " + skillDmg + "</h5>";  
@@ -103,9 +118,9 @@ $("#add-daemon").click(function() {
     $(".leader .stats").html("");
     $(".leader .stats").html(dataString);
     if(buffType !== "") {
-      daemons["L"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
+      daemons["L"] = new Daemon(role, type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
     } else {
-      daemons["L"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
+      daemons["L"] = new Daemon(role, type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
     }
   } else if(position == "Sub 1") {
     $(".sub1 .photo span").replaceWith("<img src=\"images/Blank.png\">");
@@ -113,9 +128,9 @@ $("#add-daemon").click(function() {
     $(".sub1 .stats").html("");
     $(".sub1 .stats").html(dataString);  
     if(buffType !== "") {
-      daemons["S1"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
+      daemons["S1"] = new Daemon(role, type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
     } else {
-      daemons["S1"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
+      daemons["S1"] = new Daemon(role, type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
     }
   } else if(position == "Sub 2") {
     $(".sub2 .photo span").replaceWith("<img src=\"images/Blank.png\">");
@@ -123,9 +138,9 @@ $("#add-daemon").click(function() {
     $(".sub2 .stats").html("");
     $(".sub2 .stats").html(dataString);
     if(buffType !== "") {
-      daemons["S2"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
+      daemons["S2"] = new Daemon(role, type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
     } else {
-      daemons["S2"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
+      daemons["S2"] = new Daemon(role, type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
     }
   } else if(position == "Sub 3") {
     $(".sub3 .photo span").replaceWith("<img src=\"images/Blank.png\">");
@@ -133,9 +148,9 @@ $("#add-daemon").click(function() {
     $(".sub3 .stats").html("");
     $(".sub3 .stats").html(dataString);  
     if(buffType !== "") {
-      daemons["S3"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
+      daemons["S3"] = new Daemon(role, type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
     } else {
-      daemons["S3"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
+      daemons["S3"] = new Daemon(role, type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
     }
   } else {
     $(".helper .photo span").replaceWith("<img src=\"images/Blank.png\">");
@@ -143,9 +158,9 @@ $("#add-daemon").click(function() {
     $(".helper .stats").html("");
     $(".helper .stats").html(dataString);    
     if(buffType !== "") {
-      daemons["H"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
+      daemons["H"] = new Daemon(role, type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
     } else {
-      daemons["H"] = new Daemon(type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
+      daemons["H"] = new Daemon(role, type, atk, hp, skillDmg, new Bonds(bond1,bond2,bond3), [], []);
     }
   }
   

@@ -1,5 +1,6 @@
 class Daemon {
-  constructor(type, atk, hp, skill_atk, bonds, active_effects, skill_effects) {
+  constructor(role, type, atk, hp, skill_atk, bonds, active_effects, skill_effects) {
+    this.role = role;
     this.type = type;
     this.atk = atk;
     this.hp = hp;
@@ -43,7 +44,7 @@ class Daemon {
     //E(Damage) = CC*(2*(1+CD))*X + (1-CC)*X = X*((2(1+CD))CC+(1-CC)) = X(2CC + 2CDCC + 1 - CC) = X(CC+2CDCC+1)
 
     var crit_rate_buff = this.skill_matrix["CRIT_RATE"] ? this.skill_matrix["CRIT_RATE"] : 0;
-    var crit_chance = this.type.base_crit_rate*(1+crit_rate_buff);
+    var crit_chance = this.role.base_crit_rate*(1+crit_rate_buff);
     var crit_dmg_buff = this.skill_matrix["CRIT_DMG"] ? this.skill_matrix["CRIT_DMG"] : 0;
 
     //allies crit dmg buff
@@ -95,9 +96,9 @@ class Effect {
   }
 }
 
-class DaemonType {
-  constructor (type, base_crit_rate) {
-    this.type = type;
+class DaemonRole {
+  constructor (role, base_crit_rate) {
+    this.role = role;
     this.base_crit_rate = base_crit_rate;
   }
 }

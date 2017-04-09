@@ -183,3 +183,17 @@ $("#submit-seq").click(function() {
   
   $(".result").html("Result: " + result + " (<span style='color:#55AEFE;'>" + shardstring + "</span>)");
 });
+
+$("#optimize-seq").click(function() {
+  event.preventDefault();
+  var seqInput = $("#skill-sequence").val().split(',');
+  var origDmg = run_calc(seqInput);
+
+  var result = find_best(uniquePermute(seqInput));
+  var resultDmg = run_calc(result);
+
+  var dmgDiff = resultDmg - origDmg;
+  var dmgDiffString = (dmgDiff > 0)? "<span style='color:green'>+" + (dmgDiff|0).toString() + "</span>" : "<span style='color:red'>" + (dmgDiff|0).toString() + "</span>";
+
+  $(".result").html("Best Sequence: " + result.join(" ") + " <br>Expected Damage: " + (resultDmg|0) + " (" + dmgDiffString + ")");
+})

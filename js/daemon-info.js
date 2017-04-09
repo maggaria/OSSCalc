@@ -22,7 +22,11 @@ $(document).ready(function() {
   }  
 })
 
-//Populate modal for daemons already set
+//For daemons already set:
+//Populate modal with stored data
+//disable add button and enable remove and edit buttons
+//For new daemons:
+//Show add button, and hide remove and edit buttons
 $(".leader .photo").click(function() {
   $(".position").html("<label>Position</label><p>Leader</p>");
   if(sessionStorage.getItem("set-leader") == "true") {
@@ -94,28 +98,33 @@ $(".helper .photo").click(function() {
   }    
 });
 
-function removeData(position) {
-  removePhoto(position);
-  $("." + position + " .stats").html("");
-}
-
+//Print inputted data and images at specified position
 function printData(position) {
   setPhoto(position);
   $("." + position + " .stats").html("");
   $("." + position + " .stats").html(getDataString);
 }
 
+//Clear all inputted data and images
+function removeData(position) {
+  removePhoto(position);
+  $("." + position + " .stats").html("");
+}
+
+//Set photo for added daemon and remove dashed border and + icon
+function setPhoto(position) {
+  $("." + position + " .photo").removeClass("dashed");
+  $("." + position + " .photo span").replaceWith("<img src=\"images/Blank.png\">");
+}
+
+//Replace photo with dashed border and + icon
 function removePhoto(position) {
   $("." + position + " .photo").addClass("dashed");
   $("." + position + " .photo").html("");
   $("." + position + " .photo").html("<span>+</span>");
 }
 
-function setPhoto(position) {
-  $("." + position + " .photo").removeClass("dashed");
-  $("." + position + " .photo span").replaceWith("<img src=\"images/Blank.png\">");
-}
-
+//Store inputted daemon data
 function storeSessionData(position) {
   
   var pos;
@@ -179,23 +188,7 @@ function storeSessionData(position) {
   sessionStorage.setItem(pos + "-bond-3",$("#bond-3").val());
 }
 
-function clearModal() {
-  $("#role").val("");
-  $("#type").val("");
-  $("#atk").val("");
-  $("#hp").val("");
-  $("#skill-dmg").val("");
-  $("#targets").val("");
-  $("#buff-type").val("");
-  $("#buff-num-type").val("");
-  $("#buff-val").val("");
-  $("#debuff-type").val("");
-  $("#debuff-val").val("");
-  $("#bond-1").val("");
-  $("#bond-2").val("");
-  $("#bond-3").val("");  
-}
-
+//Populate modal with stored input values for daemons already added
 function fillModal(pos) {
   $("#role").val(sessionStorage.getItem(pos + "-role"));
   $("#type").val(sessionStorage.getItem(pos + "-type"));
@@ -213,6 +206,25 @@ function fillModal(pos) {
   $("#bond-3").val(sessionStorage.getItem(pos + "-bond-3"));
 }
 
+//Reset all form fields in modal
+function clearModal() {
+  $("#role").val("");
+  $("#type").val("");
+  $("#atk").val("");
+  $("#hp").val("");
+  $("#skill-dmg").val("");
+  $("#targets").val("");
+  $("#buff-type").val("");
+  $("#buff-num-type").val("");
+  $("#buff-val").val("");
+  $("#debuff-type").val("");
+  $("#debuff-val").val("");
+  $("#bond-1").val("");
+  $("#bond-2").val("");
+  $("#bond-3").val("");  
+}
+
+//Parse form inputs and return html for printing data
 function getDataString() {
   
   var role = $("#role").val();
@@ -272,11 +284,7 @@ function getDataString() {
         +"<h5>Third Bond: " + bond3 + "</h5>"
 }
 
-function removeDaemon(position) {
-  sessionStorage.setItem("set-" + position, "false");
-  removeData(position);
-}
-
+//Add or replace daemon for a specified position in the daemons array
 function addDaemon(position) {
 
   var role;
@@ -358,6 +366,14 @@ function addDaemon(position) {
   }
 }
 
+//Remove data for daemon at specified position and indicate that position is empty
+function removeDaemon(position) {
+  sessionStorage.setItem("set-" + position, "false");
+  removeData(position);
+}
+
+//Actions for clicking the Remove Daemon button
+//Removes daemon at specified position
 $("#remove-daemon").click(function(event) {
   event.preventDefault();
   
@@ -379,6 +395,7 @@ $("#remove-daemon").click(function(event) {
   $('#daemon-form').find('input,select').val('');    
 })
 
+//Re-parse modal form and reprints daemon data
 $("#edit-daemon").click(function(event) {
   event.preventDefault();
   
@@ -405,6 +422,7 @@ $("#edit-daemon").click(function(event) {
   $('#daemon-form').find('input,select').val('');  
 });
 
+//Stores data for newly added daemon and prints daemon's data to screen
 $("#add-daemon").click(function(event) {
   event.preventDefault();
   
@@ -433,8 +451,7 @@ $("#add-daemon").click(function(event) {
   $('#daemon-form').find('input,select').val('');
 });
 
-
-
+//Run calculations on the daemons submitted
 $("#submit-seq").click(function(event) {
   event.preventDefault();
   

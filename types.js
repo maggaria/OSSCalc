@@ -58,11 +58,20 @@ class Daemon {
 
   add_noncrit_multipliers(multiplier) {
     Object.keys(this.skill_matrix).forEach(function(effect) {
-      if(effect != "CRIT_RATE" && effect != "CRIT_DMG") {
+      if(effect != "CRIT_RATE" && effect != "CRIT_DMG" && effect != "CONST_DMG_DEALT") {
         multiplier *= (1+this.skill_matrix[effect]);
       }
     }, this);
     return multiplier;
+  }
+
+  calculate_current_damage() {
+    var dmg = this.skill_atk*this.bonds.get_multiplier()*this.calculate_effect_multiplier()+this.calculate_const_dmg();
+    return dmg;
+  }
+
+  calculate_const_dmg() {
+    return this.skill_matrix["CONST_DMG_DEALT"]? this.skill_matrix["CONST_DMG_DEALT"]:0;
   }
 }
 

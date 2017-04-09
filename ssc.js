@@ -25,10 +25,10 @@ function calculate_damage(skill_sequence, seq_daemons) {
     var last_daemon = daemons[skill_sequence[skill_sequence.length-1]];
     var prev_skills = skill_sequence.slice(0,skill_sequence.length-1);
     var prev_damage = calculate_damage(prev_skills, seq_daemons);
-    var current_damage = last_daemon.skill_atk*last_daemon.bonds.get_multiplier()*last_daemon.calculate_effect_multiplier() + prev_damage 
-      + calculate_flat_rate_damage();
+    var current_damage = last_daemon.calculate_current_damage();
+    var total_damage = current_damage + prev_damage;
     update_effect_matrix(last_daemon, seq_daemons);
-    return current_damage;
+    return total_damage;
   }
 }
 
@@ -102,6 +102,7 @@ function main() {
   daemons["K"] = new Daemon(ranged, 6800, 0, 0, new Bonds(0,0,0), [], [new Effect("CRIT_RATE", 0.45, 2, "HIGH_ATK")]);
   daemons["B1"] = new Daemon(ranged, 12063, 0, 3374, new Bonds(0,0,0), [], []);
   daemons["G"] = new Daemon(ranged, 12370, 0, 5725, new Bonds(0,0,0), [], []);
+  daemons["S"] = new Daemon(ranged, 0, 0, 0, new Bonds(0,0,0), [], [new Effect("CONST_DMG_DEALT", 1020, 5, null)]);
   daemons["test"] = new Daemon(none, 10000, 1, 1, new Bonds(0,0,0), [], []);
 }
 

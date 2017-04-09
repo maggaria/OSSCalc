@@ -1,58 +1,34 @@
 //skill sequence calculator
 
+//constants
+SELF_TARGET = 0;
+
+//basic ui -- remove
+window.onload = function() {
+  document.getElementById('preset1').onclick = function() {
+    document.getElementById('skill_sequence').value = 'F A3 A3 A2 A2 G G B1';
+    input_run(); };
+
+  document.getElementById('preset2').onclick = function() {
+    document.getElementById('skill_sequence').value = 'F K F A2 A2 T3 T3 B1';
+    input_run(); };
+};
+
 //global test daemon_mapping
 var daemons = {};
 var effect_matrix = {};
 
-class Daemon {
-  constructor(type, skill_atk, bonds, now_effects, later_effects) {
-    this.type = type;
-    this.skill_atk = skill_atk;
-    this.bonds = bonds;
-    this.now_effects = now_effects;
-    this.later_effects = later_effects;
-    var skill_matrix = {};
-    now_effects.forEach(function(effect) {
-      skill_matrix[effect.skill_type] = effect.value;
-    } );
-    this.skill_matrix = skill_matrix;
-  }
-}
-
-class Bonds {
-  constructor(three, four, five) {
-    this.three = three;
-    this.four = four;
-    this.five = five;
-  }
-  get_multiplier() {
-    return (1 + this.three*4.5 + this.four*0.06 + this.five*0.075)
-  }
-}
-
-class Effect {
-  constructor(skill_type, value) {
-    this.skill_type = skill_type;
-    this.value = value;
-  }
-}
-
-class DaemonType {
-  constructor (type, base_crit_rate) {
-    this.type = type;
-    this.base_crit_rate = base_crit_rate;
-  }
-}
-
-function calculate_damage(skill_sequence) {
+function calculate_damage(skill_sequence, seq_daemons) {
   if(skill_sequence.length < 1) {
     return 0;
   } else {
     var last_daemon = daemons[skill_sequence[skill_sequence.length-1]];
-    var prev_damage = calculate_damage(skill_sequence.slice(0,skill_sequence.length-1));
-    var current_damage = last_daemon.skill_atk*last_daemon.bonds.get_multiplier()*calculate_effect_multiplier(last_daemon, effect_matrix) + prev_damage 
+    var prev_skills = skill_sequence.slice(0,skill_sequence.length-1);
+    var prev_damage = calculate_damage(prev_skills, seq_daemons);
+    last_daemon.build_skill_matrix();
+    var current_damage = last_daemon.skill_atk*last_daemon.bonds.get_multiplier()*last_daemon.calculate_effect_multiplier() + prev_damage 
       + calculate_flat_rate_damage();
-    update_effect_matrix(last_daemon);
+    update_effect_matrix(last_daemon, seq_daemons);
     return current_damage;
   }
 }
@@ -61,74 +37,79 @@ function calculate_flat_rate_damage() {
   return 0;
 }
 
-function calculate_effect_multiplier(daemon, effect_matrix) {
-  var effect_multiplier = 1;
-  var other_crit_buffs = {};
-  
-  Object.keys(effect_matrix).forEach(function(effect_type) {
-    if(effect_type == "CRIT_RATE" || effect_type == "CRIT_DMG") {
-      other_crit_buffs[effect_type] = effect_matrix[effect_type];
+function update_effect_matrix(daemon, seq_daemons) {
+  daemon.skill_effects.forEach(function(effect) {
+    //switch on target type
+    if(effect.num_targets == SELF_TARGET) {
+      //TODO: need an example of this kind of buff
+      return;
     } else {
-      effect_multiplier *= (1+effect_matrix[effect_type]);
-    }
-  })
-
-  effect_multiplier *= calculate_crits(daemon, other_crit_buffs);
-
-  return effect_multiplier;
-}
-
-function update_effect_matrix(daemon) {
-  daemon.later_effects.forEach(function(effect) {
-    if(!effect_matrix[effect.skill_type]) {
-      effect_matrix[effect.skill_type] = effect.value; 
-    } else {
-      effect_matrix[effect.skill_type] += effect.value;
+      buff_target_daemons(effect, seq_daemons);
     }
     });
 }
 
-function calculate_crits(daemon, other_crit_buffs) {
-  var crit_multiplier = 1;
+function buff_target_daemons(effect, seq_daemons) {
+  num_targets = effect.nt;
+  sort_tag = effect.sort_order;
 
-  //ex of crit, CR = crit rate increase, CD = crit dmg increase, NCR = normal crit rate, 2 = NCD = normal crit damage
-  //X = attack.
-  //chance of crit (CC) = (NCR*(1+CR))
-  //E(Damage) = CC*(2*(1+CD))*X + (1-CC)*X = X*((2(1+CD))CC+(1-CC)) = X(2CC + 2CDCC + 1 - CC) = X(CC+2CDCC+1)
+  targets = seq_daemons;
 
-  crit_rate_buff = daemon.skill_matrix["CRIT_RATE"] ? daemon.skill_matrix["CRIT_RATE"] : 0;
-  allies_cr_buff = other_crit_buffs["CRIT_RATE"] ? other_crit_buffs["CRIT_RATE"] : 0;
-  crit_chance = daemon.type.base_crit_rate*(1+crit_rate_buff+allies_cr_buff);
-  crit_dmg_buff = daemon.skill_matrix["CRIT_DMG"] ? daemon.skill_matrix["CRIT_DMG"] : 0;
-  allies_cd_buff = other_crit_buffs["CRIT_DMG"] ? other_crit_buffs["CRIT_DMG"] : 0;
+  if (sort_tag) {
+    sorted = sort_daemons(seq_daemons, sort_tag);
+    targets = sorted.slice(0, num_targets);
+  }
 
-  //total crit dmg boost (tcdb) = (CD+ACD)
-  //E(damage) = X(CC+2*(CD+ACD)*CC+1)
-  total_crit_dmg_buff = crit_dmg_buff + allies_cd_buff;
+  targets.forEach( function(daemon) {
+    daemons[daemon].active_effects.push(effect);
+    });
+  return;
 
-  crit_multiplier += crit_chance + (2*total_crit_dmg_buff)*crit_chance;
+  
+}
 
-  return crit_multiplier;
+function sort_daemons(daemon_set, sort_by) {
+  var daemon_array = Array.from(daemon_set);
+  if (sort_by == "HIGH_ATK") {
+    return deep_sort(daemon_array, "atk", false);
+  }
+}
+
+function deep_sort(arr, key, ascending) {
+  if (ascending) {
+    return arr.sort(function(a,b) {
+      return daemons[a][key] - daemons[b][key];
+    });
+  } else {
+    return arr.sort(function(a,b) {
+      return daemons[b][key] - daemons[a][key];
+    });
+  } 
 }
 
 function main() {
   ranged = new DaemonType("ranged", 0.4);
   melee = new DaemonType("melee", 0.2);
-  daemons["A1"] = new Daemon(ranged, 3174, new Bonds(0,0,0), [], [new Effect("DMG_DEALT", 0.6)]);
-  daemons["A2"] = new Daemon(ranged, 3894, new Bonds(0,0,2), [], [new Effect("DMG_DEALT", 0.74)]); 
-  daemons["T1"] = new Daemon(ranged, 2813, new Bonds(0,0,2), [], [new Effect("DMG_DEALT", 0.52)]);
-  daemons["T1.5"] = new Daemon(ranged, 2813, new Bonds(0,0,2), [new Effect("CRIT_RATE", 0.21), new Effect("CRIT_DMG", 0.5)], [new Effect("DMG_DEALT", 0.52)]);
-  daemons["T2"] = new Daemon(ranged, 2847, new Bonds(0,0,3), [new Effect("CRIT_RATE", 0.21), new Effect("CRIT_DMG", 0.5)], [new Effect("DMG_DEALT", 0.57)]);
-  daemons["T3"] = new Daemon(ranged, 3141, new Bonds(0,0,0), [new Effect("CRIT_RATE", 0.21), new Effect("CRIT_DMG", 0.5)], [new Effect("DMG_DEALT", 0.55)]);
-  daemons["NYT"] = new Daemon(ranged, 5160, new Bonds(0,0,1), [new Effect("CRIT_RATE", 0.05)], []);
-  daemons["F"] = new Daemon(ranged, 0, new Bonds(0,0,1), [], [new Effect("DMG_INCREASE", 0.38)]);
-  daemons["K"] = new Daemon(ranged, 0, new Bonds(0,0,0), [], [new Effect("CRIT_RATE", 0.45)]);
-  daemons["B1"] = new Daemon(ranged, 3374, new Bonds(0,0,0), [], []);
+  none = new DaemonType("none", 0.1);
+  daemons["A1"] = new Daemon(ranged, 0, 0, 3174, new Bonds(0,0,0), [], [new Effect("DMG_DEALT", 0.6, 5, null)]);
+  daemons["A3"] = new Daemon(ranged, 0, 0, 3693, new Bonds(0,0,0), [], [new Effect("DMG_DEALT", 0.67, 5, null)]);
+  daemons["A2"] = new Daemon(ranged, 11034, 0, 3894, new Bonds(0,0,2), [], [new Effect("DMG_DEALT", 0.74, 5, null)]); 
+  daemons["T1"] = new Daemon(ranged, 0, 0, 2813, new Bonds(0,0,2), [], [new Effect("DMG_DEALT", 0.52, 5, null)]);
+  daemons["T1.5"] = new Daemon(ranged, 0, 0, 2813, new Bonds(0,0,2), [new Effect("CRIT_RATE", 0.21, 0, null), new Effect("CRIT_DMG", 0.5, 0, null)], [new Effect("DMG_DEALT", 0.52, 5, null)]);
+  daemons["T2"] = new Daemon(ranged, 0, 0, 2847, new Bonds(0,0,3), [new Effect("CRIT_RATE", 0.21, 0, null), new Effect("CRIT_DMG", 0.5, 0 , null)], [new Effect("DMG_DEALT", 0.57, 5, null)]);
+  daemons["T3"] = new Daemon(ranged, 11221, 0, 3141, new Bonds(0,0,0), [new Effect("CRIT_RATE", 0.21, 0, null), new Effect("CRIT_DMG", 0.5, 0, null)], [new Effect("DMG_DEALT", 0.55, 5, null)]);
+  daemons["NYT"] = new Daemon(ranged, 1, 0, 5160, new Bonds(0,0,1), [new Effect("CRIT_RATE", 0.05, 0, null)], []);
+  daemons["F"] = new Daemon(ranged, 9246, 0, 0, new Bonds(0,0,1), [], [new Effect("DMG_INCREASE", 0.38, 5, null)]);
+  daemons["K"] = new Daemon(ranged, 6800, 0, 0, new Bonds(0,0,0), [], [new Effect("CRIT_RATE", 0.45, 2, "HIGH_ATK")]);
+  daemons["B1"] = new Daemon(ranged, 12063, 0, 3374, new Bonds(0,0,0), [], []);
+  daemons["G"] = new Daemon(ranged, 12370, 0, 5725, new Bonds(0,0,0), [], []);
+  daemons["test"] = new Daemon(none, 10000, 1, 1, new Bonds(0,0,0), [], []);
 }
 
 function run_calc(skill_sequence) {
   main();
-  var result = calculate_damage(skill_sequence);
+  var seq_daemons = array_to_set(skill_sequence);
+  var result = calculate_damage(skill_sequence, seq_daemons);
   clear_matrix();
   return result;
 }
@@ -163,52 +144,17 @@ function rank(skill_sequences) {
   });
   return ranked;
 }
-
-const permutator = (inputArr) => {
-  let result = [];
-
-  const permute = (arr, m = []) => {
-    if (arr.length === 0) {
-      result.push(m)
-    } else {
-      for (let i = 0; i < arr.length; i++) {
-        let curr = arr.slice();
-        let next = curr.splice(i, 1);
-        permute(curr.slice(), m.concat(next))
-     }
-   }
- }
-
- permute(inputArr)
-
- return result;
-}
-
-function onlyUnique(value, index, self) { 
-  /*// usage example:
-var a = ['a', 1, 'a', 2, '1'];
-var unique = a.filter( onlyUnique ); // returns ['a', 1, 2, '1']*/
-    return self.indexOf(value) === index;
-}
-
-function uniquePermute(input) {
-  var all = permutator(input).filter(onlyUnique);
-  var hash = {};
-  var out = [];
-  for (var i = 0, l = all.length; i < l; i++) {
-    var key = all[i].join('|');
-    if (!hash[key]) {
-      out.push(all[i]);
-      hash[key] = 'found';
-    }
-  }
-  return out;
-}
-
-/*// usage example:
-var a = ['a', 1, 'a', 2, '1'];
-var unique = a.filter( onlyUnique ); // returns ['a', 1, 2, '1']*/
-
 function clear_matrix() {
   effect_matrix = {};
+}
+
+function input_run() {
+  skill_sequence = parse_skill_sequence();
+  document.getElementById("response").innerHTML = run_calc(skill_sequence);
+  return;
+}
+
+function parse_skill_sequence() {
+  var stringseq = document.getElementById("skill_sequence").value;
+  return stringseq.split(" ");
 }

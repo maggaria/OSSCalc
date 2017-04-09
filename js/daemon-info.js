@@ -25,10 +25,10 @@ $("#add-daemon").click(function() {
   
   switch($("#role").val()) {
     case "melee":
-      type = new DaemonRole("melee",0.2);
+      role = new DaemonRole("melee",0.2);
       break;
     case "ranged":
-      type = new DaemonRole("ranged", 0.4);
+      role = new DaemonRole("ranged", 0.4);
       break;
   }
 
@@ -174,6 +174,12 @@ $("#submit-seq").click(function() {
   var seqInput = $("#skill-sequence").val().split(',');
   
   var result = run_calc(seqInput);
+  var shards = n_shards(seqInput);
+
+  var shardstring = "";
+  for (var i = 0; i < shards; i++) {
+    shardstring += "&#9679;";
+  }
   
-  $(".result").text("Result: " + result);
+  $(".result").html("Result: " + result + " (<span style='color:#55AEFE;'>" + shardstring + "</span>)");
 });

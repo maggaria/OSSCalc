@@ -25,7 +25,6 @@ function calculate_damage(skill_sequence, seq_daemons) {
     var last_daemon = daemons[skill_sequence[skill_sequence.length-1]];
     var prev_skills = skill_sequence.slice(0,skill_sequence.length-1);
     var prev_damage = calculate_damage(prev_skills, seq_daemons);
-    last_daemon.build_skill_matrix();
     var current_damage = last_daemon.skill_atk*last_daemon.bonds.get_multiplier()*last_daemon.calculate_effect_multiplier() + prev_damage 
       + calculate_flat_rate_damage();
     update_effect_matrix(last_daemon, seq_daemons);
@@ -61,7 +60,7 @@ function buff_target_daemons(effect, seq_daemons) {
   }
 
   targets.forEach( function(daemon) {
-    daemons[daemon].active_effects.push(effect);
+    daemons[daemon].add_active_effect(effect);
     });
   return;
 

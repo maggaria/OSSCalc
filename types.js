@@ -7,15 +7,23 @@ class Daemon {
     this.bonds = bonds;
     this.active_effects = active_effects;
     this.skill_effects = skill_effects;
-    this.skill_matrix = {};
+    this.build_skill_matrix();
+  }
+
+  add_active_effect(effect) {
+    this.active_effects.push(effect);
+    this.update_skill_matrix(effect);
+  }
+
+  update_skill_matrix(effect) {
+    this.skill_matrix[effect.skill_type] = this.skill_matrix[effect.skill_type]? this.skill_matrix[effect.skill_type] + effect.value : effect.value;
   }
 
   build_skill_matrix() {
-    var skill_matrix = {};
+    this.skill_matrix = {};
     this.active_effects.forEach(function(effect) {
-      skill_matrix[effect.skill_type] = skill_matrix[effect.skill_type]? skill_matrix[effect.skill_type] + effect.value : effect.value;
-      } );
-    this.skill_matrix = skill_matrix;
+      this.update_skill_matrix(effect);
+    }, this);
   }
 
   calculate_effect_multiplier() {

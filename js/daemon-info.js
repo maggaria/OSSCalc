@@ -251,9 +251,8 @@ function getDataString() {
   if(isNaN(bond3)) {
     bond3 = 0;
   }
-  role = role[0].toUpperCase() + role.slice(1);
   
-  return buildDaemonInformationDisplay(role, type, atk, hp, skillDmg, targets, sortOrder, skillEffect, effectVal, bond1, bond2, bond3);
+  return buildDaemonInformationDisplay(role[0].toUpperCase() + role.slice(1), type, atk, hp, skillDmg, targets, sortOrder, skillEffect, effectVal, bond1, bond2, bond3);
 }
 
 function buildDaemonInformationDisplay(role,type,atk,hp,skillDmg,targets,sortOrder,skillEffect, effectVal, bond1, bond2, bond3) {

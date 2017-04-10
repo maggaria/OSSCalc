@@ -24,20 +24,20 @@ $(document).ready(function() {
 
 //For daemons already set:
 //Populate modal with stored data
-//disable add button and enable remove and edit buttons
+//disable add button and enable remove and update buttons
 //For new daemons:
-//Show add button, and hide remove and edit buttons
+//Show add button, and hide remove and update buttons
 $(".leader .photo").click(function() {
   $(".position").html("<label>Position</label><p>Leader</p>");
   if(sessionStorage.getItem("set-leader") == "true") {
     $("#add-daemon").hide();
     $("#remove-daemon").show();
-    $("#edit-daemon").show();
+    $("#update-daemon").show();
     fillModal("leader");
   } else {
     $("#add-daemon").show();
     $("#remove-daemon").hide();
-    $("#edit-daemon").hide();
+    $("#update-daemon").hide();
     clearModal();
   }
 });
@@ -46,12 +46,12 @@ $(".sub1 .photo").click(function() {
   if(sessionStorage.getItem("set-sub1") == "true") {
     $("#add-daemon").hide();
     $("#remove-daemon").show();
-    $("#edit-daemon").show();
+    $("#update-daemon").show();
     fillModal("sub1");
   } else {
     $("#add-daemon").show();
     $("#remove-daemon").hide();
-    $("#edit-daemon").hide();
+    $("#update-daemon").hide();
     clearModal();
   }  
 });
@@ -60,12 +60,12 @@ $(".sub2 .photo").click(function() {
   if(sessionStorage.getItem("set-sub2") == "true") {
     $("#add-daemon").hide();
     $("#remove-daemon").show();
-    $("#edit-daemon").show();
+    $("#update-daemon").show();
     fillModal("sub2");
   } else {
     $("#add-daemon").show();
     $("#remove-daemon").hide();
-    $("#edit-daemon").hide();
+    $("#update-daemon").hide();
     clearModal();
   }    
 });
@@ -74,12 +74,12 @@ $(".sub3 .photo").click(function() {
   if(sessionStorage.getItem("set-sub3") == "true") {
     $("#add-daemon").hide();
     $("#remove-daemon").show();
-    $("#edit-daemon").show();
+    $("#update-daemon").show();
     fillModal("sub3");
   } else {
     $("#add-daemon").show();
     $("#remove-daemon").hide();
-    $("#edit-daemon").hide();
+    $("#update-daemon").hide();
     clearModal();
   }    
 });
@@ -88,12 +88,12 @@ $(".helper .photo").click(function() {
   if(sessionStorage.getItem("set-helper") == "true") {
     $("#add-daemon").hide();
     $("#remove-daemon").show();
-    $("#edit-daemon").show();
+    $("#update-daemon").show();
     fillModal("helper");
   } else {
     $("#add-daemon").show();
     $("#remove-daemon").hide();
-    $("#edit-daemon").hide();
+    $("#update-daemon").hide();
     clearModal();
   }    
 });
@@ -147,42 +147,15 @@ function storeSessionData(position) {
       break;
   }
 
-  var role;
-  
-  switch($("#role").val()) {
-    case "melee":
-      role = new DaemonRole("melee",0.2);
-      break;
-    case "ranged":
-      role = new DaemonRole("ranged", 0.4);
-      break;
-  }
-
-  var type;
-
- switch($("#type").val()) {
-  case "Phantasma":
-    type = "P";
-    break;
-  case "Anima":
-    type = "A";
-    break;
-  case "Divina":
-    type = "D";
-    break;
- }
-
   sessionStorage.setItem(pos + "-role",$("#role").val());
   sessionStorage.setItem(pos + "-type",$("#type").val());
   sessionStorage.setItem(pos + "-atk",$("#atk").val());
   sessionStorage.setItem(pos + "-hp",$("#hp").val());
   sessionStorage.setItem(pos + "-skill-dmg",$("#skill-dmg").val());
   sessionStorage.setItem(pos + "-targets",$("#targets").val());
-  sessionStorage.setItem(pos + "-buff-type",$("#buff-type").val());
-  sessionStorage.setItem(pos + "-buff-num-type",$("#buff-num-type").val());
-  sessionStorage.setItem(pos + "-buff-val",$("#buff-val").val());
-  sessionStorage.setItem(pos + "-debuff-type",$("#debuff-type").val());
-  sessionStorage.setItem(pos + "-debuff-val",$("#debuff-val").val());
+  sessionStorage.setItem(pos + "-skill-effect",$("#skill-effect").val());
+  sessionStorage.setItem(pos + "-effect-num-format",$("#effect-num-format").val());
+  sessionStorage.setItem(pos + "-effect-val",$("#effect-val").val());
   sessionStorage.setItem(pos + "-bond-1",$("#bond-1").val());
   sessionStorage.setItem(pos + "-bond-2",$("#bond-2").val());
   sessionStorage.setItem(pos + "-bond-3",$("#bond-3").val());
@@ -196,11 +169,9 @@ function fillModal(pos) {
   $("#hp").val(sessionStorage.getItem(pos + "-hp"));
   $("#skill-dmg").val(sessionStorage.getItem(pos + "-skill-dmg"));
   $("#targets").val(sessionStorage.getItem(pos + "-targets"));
-  $("#buff-type").val(sessionStorage.getItem(pos + "-buff-type"));
-  $("#buff-num-type").val(sessionStorage.getItem(pos + "-buff-num-type"));
-  $("#buff-val").val(sessionStorage.getItem(pos + "-buff-val"));
-  $("#debuff-type").val(sessionStorage.getItem(pos + "-debuff-type"));
-  $("#debuff-val").val(sessionStorage.getItem(pos + "-debuff-val"));
+  $("#skill-effect").val(sessionStorage.getItem(pos + "-skill-effect"));
+  $("#effect-num-format").val(sessionStorage.getItem(pos + "-effect-num-format"));
+  $("#effect-val").val(sessionStorage.getItem(pos + "-effect-val"));
   $("#bond-1").val(sessionStorage.getItem(pos + "-bond-1"));
   $("#bond-2").val(sessionStorage.getItem(pos + "-bond-2"));
   $("#bond-3").val(sessionStorage.getItem(pos + "-bond-3"));
@@ -214,11 +185,9 @@ function clearModal() {
   $("#hp").val("");
   $("#skill-dmg").val("");
   $("#targets").val("");
-  $("#buff-type").val("");
-  $("#buff-num-type").val("");
-  $("#buff-val").val("");
-  $("#debuff-type").val("");
-  $("#debuff-val").val("");
+  $("#skill-effect").val("");
+  $("#effect-num-format").val("");
+  $("#effect-val").val("");
   $("#bond-1").val("");
   $("#bond-2").val("");
   $("#bond-3").val("");  
@@ -254,8 +223,21 @@ function getDataString() {
   }
   
   var sortOrder = $("#sort-order").val();
-  var buffType = $("#buff-type").val();
-  var buffVal = parseInt($("#buff-val").val())/100;
+  
+  var skillEffect = $("#skill-effect").val();
+  var effectNumFormat = $("#effect-num-format").val();
+  var effectVal;
+  
+  if(effectNumFormat !== "") {
+    if(effectNumFormat == "int") {
+      effectVal = $("#effect-val").val();
+    } else {
+      effectVal = parseInt($("#effect-val").val())/100;
+    }
+  } else {
+    effectVal = 0;
+  }
+  
   var bond1 = parseInt($("#bond-1").val());
   var bond2 = parseInt($("#bond-2").val());
   var bond3 = parseInt($("#bond-3").val());
@@ -277,11 +259,11 @@ function getDataString() {
         +"<h5>Skill DMG: " + skillDmg + "</h5>"
         +"<h5>Targets: " + targets + "</h5>"
         +"<h5>Sort Order: " + sortOrder + "</h5>"
-        +"<h5>Buff Type: " + buffType + "</h5>"
-        +"<h5>Buff Value: " + buffVal + "</h5>"
+        +"<h5>Skill Effect: " + skillEffect + "</h5>"
+        +"<h5>Effect Value: " + effectVal + "</h5>"
         +"<h5>First Bond: " + bond1 + "</h5>"
         +"<h5>Second Bond: " + bond2 + "</h5>"
-        +"<h5>Third Bond: " + bond3 + "</h5>"
+        +"<h5>Third Bond: " + bond3 + "</h5>";
 }
 
 //Add or replace daemon for a specified position in the daemons array
@@ -330,11 +312,18 @@ function addDaemon(position) {
     bond3 = 0;
   }  
   
-  var buffType = $("#buff-type").val();
-  var buffVal;
+  var skillEffect = $("#skill-effect").val();
+  var effectNumFormat = $("#effect-num-format").val();
+  var effectVal;
   
-  if(buffType !== "") {
-    buffVal = parseInt($("#buff-val").val())/100;
+  if(effectNumFormat !== "") {
+    if(effectNumFormat == "int") {
+      effectVal = $("#effect-val").val();
+    } else {
+      effectVal = parseInt($("#effect-val").val())/100;
+    }
+  } else {
+    effectVal = 0;
   }    
   
   var targets;
@@ -359,10 +348,10 @@ function addDaemon(position) {
     sortOrder = null;
   }  
   
-  if(buffType == "") {
+  if(skillEffect == "") {
     daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], []);
   } else {
-    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(buffType,buffVal, targets, sortOrder)]);
+    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(skillEffect,effectVal, targets, sortOrder)]);
   }
 }
 
@@ -371,6 +360,28 @@ function removeDaemon(position) {
   sessionStorage.setItem("set-" + position, "false");
   removeData(position);
 }
+
+/*function addPreset(preset) {
+  
+  if(preset == "TE") {
+    $("#role").val() = "ranged";
+    $("#type").val() = "D";
+    $("#atk").val() = 11694;
+    $("#hp").val() = 9546;
+    $("#skill-dmg").val() = 2847;
+    $("#targets").val() = 1;
+    $("#sort-order").val() = "";
+    $("#skill-effect").val() = "DMG_DEALT";
+  }  
+}
+
+$("#select-daemon").click(function(event) {
+  event.preventDefault();
+  
+  var preset = $("#presets").val();
+  
+  addPreset(preset);
+})*/
 
 //Actions for clicking the Remove Daemon button
 //Removes daemon at specified position
@@ -396,7 +407,7 @@ $("#remove-daemon").click(function(event) {
 })
 
 //Re-parse modal form and reprints daemon data
-$("#edit-daemon").click(function(event) {
+$("#update-daemon").click(function(event) {
   event.preventDefault();
   
   var position = $(".position p").text();

@@ -7,7 +7,7 @@ body {
 
 .team {
   display: flex;
-  width: 50%;
+  width: 60%;
   margin: 2em auto !important; }
   @media only screen and (max-width: 500px) {
     .team {
@@ -25,7 +25,7 @@ body {
   box-sizing: border-box;
   width: 80%;
   margin: 0 auto;
-  height: 8em; }
+  min-height: 10em; }
   .photo span {
     font-size: 3em;
     transform: translateY(3em); }
@@ -54,9 +54,13 @@ img:hover {
       width: 90%; } }
 
 .modal {
-  color: #291626; }
+  color: #291626;
+  padding: 0; }
   .modal label {
     margin-top: 0.5em; }
+
+#select-preset {
+  margin: 1em 0; }
 
 #edit-daemon {
   display: none; }
@@ -70,5 +74,28 @@ img:hover {
 .result {
   padding: 2em;
   font-weight: bold; }
+
+.about {
+  position: fixed;
+  right: 2em;
+  bottom: 0; }
+
+.glyphicon {
+  cursor: pointer; }
+
+#about-title {
+  margin-left: 2em;
+  margin-right: 2em;
+  border-bottom: 1px solid gray; }
+
+.about-text {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  padding-left: 3em;
+  padding-right: 3em;
+  text-align: left; }
+
+.credits {
+  text-align: center; }
 
 /*# sourceMappingURL=style.css.map */

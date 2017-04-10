@@ -9,7 +9,7 @@
 
 <body>
 
-  <h1>Otogi Skill Sequence Calculator</h1>
+  <h1><span class="label label-info">BETA</span> Otogi Skill Sequence Calculator</h1>
   
   <div class="team row">
     <div class="daemon leader"><div class="photo dashed" data-toggle="modal" data-target="#daemon-form"><span>+</span></div><h4>Leader</h4><div class="stats"></div></div>
@@ -36,6 +36,40 @@
   
   </div>
   
+  <div class="about" data-toggle="modal" data-target="#about-blurb"><h1><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></h1></div>
+  
+  <div class="modal fade" id="about-blurb">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3> How is this calculated?</h3>
+      </div>        
+      <div class="row about-text">
+        This calculator is by no means an accurate representation of how much damage you will do to a boss; there are many factors that have yet to be added to the model. Since survivability is not considered, the team that does the most damage according to this calculator will likely not be able to make it in one piece to the last stage. However, you may use it to approximate the impact of using one sub's skill one more time over another sub's skill and get a rough idea of how you should structure your skill sequence.
+        <br>
+        <br>
+        The following are currently considered:
+        <ul>
+          <li> Skill DMG </li>
+          <li> Skill DMG buffs </li>
+          <li> Enemy debuffs</li>
+          <li> Crit Rate (arbitrary est. 0.4 for ranged, 0.2 for melee) </li>
+          <li> Crit DMG buffs </li>
+        </ul>
+        More to come in the future!
+        <br/>
+        <br>
+        <div class="credits">
+          This is an open-source, volunteer-driven project. If you would like to report bugs or make a feature request, please do so at the project <a href="https://github.com/maggaria/OSSCalc">GitHub</a>.
+          <br><br>
+          Credits: <a href="http://otogidb.com/buffs-debuffs/">Formulae from OtogiDB</a>
+        </div>
+      </div>
+      </div>
+    </div>
+  </div>  
+  
   <div class="modal fade" id="daemon-form">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -48,6 +82,36 @@
           <div class="row">
             <div class="position col-md-12">
               <label>Position</label><p>Leader</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+              <label>Preset Daemons</label>
+              <select id="presets" class="form-control">
+                <option value="">-- Select --</option>
+                <option value="TE">Titanium Elf (Lv90)</option>
+                <!--<option value="A">Amanojaku (Lv80)</option>
+                <option value="F">Freyr (Lv90)</option>
+                <option value="K">Katsushika Hokusai (Lv80)</option>
+                <option value="T">Titania [New Year] (Lv90)</option>
+                <option value="B">Belphegor </option>
+                <option value="S">Socrates (Lv90)</option>
+                <option value="G">Guillotine (Lv90)</option>-->
+              </select>
+            </div>
+            <div class="col-md-3"></div>
+          </div>
+          <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+              <button id="select-preset" type="submit" class="btn btn-primary" value="submit">Select Preset</button>
+            </div>
+            <div class="col-md-3"></div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <h5>OR</h5>
             </div>
           </div>
           <div class="row">
@@ -78,8 +142,10 @@
             </div>            
           </div>
           <div class="row">
-            <div class="form-group col-xs-6 col-md-4">
+            <div class="form-group col-xs-12 col-md-4">
               <label>Skill DMG</label><input id="skill-dmg" type="number" class="form-control" name="skill-dmg" placeholder="0">
+            </div>
+            <div class="form-group col-xs-12 col-md-4">
               <label>Number of Targets</label>
               <select id="targets" class="form-control">
                 <option value="">-- Select --</option>
@@ -88,6 +154,8 @@
                 <option value="target-3">3</option>
                 <option value="target-all">All</option>
               </select>
+            </div>
+            <div class="form-group col-xs-12 col-md-4">
               <label>Target Condition</label>
               <select id="sort-order" class="form-control">
                 <option value="">-- Select --</option>
@@ -95,30 +163,29 @@
                 <option value="HIGH_HP">Highest HP</option>
               </select>                
             </div>
-            <div class="form-group col-xs-6 col-md-4">
-              <label>Buff Type</label>
-              <select id="buff-type" class="form-control">
+          </div>
+          <div class="row">
+            <div class="form-group col-xs-12 col-md-4">
+              <label>Skill Effect</label>
+              <select id="skill-effect" class="form-control">
                 <option value="">-- Select --</option>
-                <option value="DMG_DEALT">DMG Buff</option>
+                <option value="DMG_INCREASE">Increase Ally Atk</option>
+                <option value="DMG_DEALT">Reduce Enemy Def (Integer)</option>
+                <option value="CONST_DMG_DEALT">Reduce Enemy Def (Percent)</option>
                 <option value="CRIT_RATE">Crit Rate Buff</option>
                 <option value="CRIT_DMG">Crit DMG Buff</option>
-              </select>                
-              <label>Buff Num Type</label>
-              <select id="buff-num-type" class="form-control">
-                <option value="">-- Select --</option>
-                <option value="int-buff">Integer</option>
-                <option value="percent-buff">Percent</option>
-              </select>
-              <label>Buff Value</label><input id="buff-val" class="form-control" type="number" name="buff-val" placeholder="0"> 
+              </select>       
             </div>
-            <div class="form-group col-xs-6 col-md-4">
-              <label>Debuff Type</label>
-              <select id="debuff-type" class="form-control">
+            <div class="form-group col-xs-12 col-md-4">
+              <label>Effect Num Format</label>
+              <select id="effect-num-format" class="form-control">
                 <option value="">-- Select --</option>
-                <option value="int-debuff">Integer</option>
-                <option value="percent-debuff">Percent</option>
+                <option value="int">Integer</option>
+                <option value="percent">Percent</option>
               </select>
-              <label>Debuff Value</label><input class="form-control" type="number" name="debuff-val" placeholder="0">
+            </div>
+            <div class="form-group col-xs-12 col-md-4">
+              <label>Effect Value</label><input id="effect-val" class="form-control" type="number" name="effect-val" placeholder="0"> 
             </div>
           </div>
           <div class="row">
@@ -160,7 +227,7 @@
         <div class="modal-footer">
           <button id="add-daemon" type="submit" class="btn btn-primary" value="submit">Add Daemon</button>
           <button id="remove-daemon" type="submit" class="btn btn-danger" value="submit">Remove Daemon</button>
-          <button id="edit-daemon" type="submit" class="btn btn-primary" value="submit">Edit Daemon</button>
+          <button id="update-daemon" type="submit" class="btn btn-primary" value="submit">Update Daemon</button>
         </div>
         </form>
       </div>

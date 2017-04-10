@@ -8,7 +8,7 @@ body {
 
 .team {
   display: flex;
-  width: 50%;
+  width: 60%;
   margin: 2em auto !important;
   @media only screen and (max-width: 500px) {
     width: 100%;
@@ -28,7 +28,7 @@ body {
   box-sizing: border-box;
   width: 80%;
   margin: 0 auto;
-  height: 8em;
+  min-height: 10em;
   span {
     font-size: 3em;
     transform: translateY(3em);
@@ -65,9 +65,14 @@ img:hover {
 
 .modal {
   color: #291626;
+  padding: 0;
   label {
     margin-top: 0.5em;
   }
+}
+
+#select-preset {
+  margin: 1em 0;
 }
 
 #edit-daemon {
@@ -85,4 +90,32 @@ img:hover {
 .result {
   padding: 2em;
   font-weight: bold;
+}
+
+.about {
+  position: fixed;
+  right: 2em;
+  bottom: 0;
+}
+
+.glyphicon {
+  cursor: pointer;
+}
+
+#about-title {
+  margin-left: 2em;
+  margin-right: 2em;
+  border-bottom: 1px solid gray;
+}
+
+.about-text {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  padding-left: 3em;
+  padding-right: 3em;
+  text-align: left;
+}
+
+.credits {
+  text-align:center;
 }

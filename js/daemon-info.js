@@ -2,23 +2,43 @@
 $(document).ready(function() {
   if(sessionStorage.getItem("set-leader") == "true") {
     fillModal("leader");
-    printData("leader");
+    if(sessionStorage.getItem("leader-preset") !== "none") {
+      printData("leader",sessionStorage.getItem("leader-preset"));
+    } else {
+      printData("leader","none");
+    }
   }
   if(sessionStorage.getItem("set-sub1") == "true") {
     fillModal("sub1");
-    printData("sub1");
+    if(sessionStorage.getItem("sub1-preset") !== "none") {
+      printData("sub1",sessionStorage.getItem("sub1-preset"));
+    } else {
+      printData("sub1","none");
+    }
   }
   if(sessionStorage.getItem("set-sub2") == "true") {
     fillModal("sub2");
-    printData("sub2");
+    if(sessionStorage.getItem("sub2-preset") !== "none") {
+      printData("sub2",sessionStorage.getItem("sub2-preset"));
+    } else {
+      printData("sub2","none");
+    }
   }
   if(sessionStorage.getItem("set-sub3") == "true") {
     fillModal("sub3");
-    printData("sub3");
+    if(sessionStorage.getItem("sub3-preset") !== "none") {
+      printData("sub3",sessionStorage.getItem("sub3-preset"));
+    } else {
+      printData("sub3","none");
+    }
   }
   if(sessionStorage.getItem("set-helper") == "true") {
     fillModal("helper");
-    printData("helper");
+    if(sessionStorage.getItem("helper-preset") !== "none") {
+      printData("helper",sessionStorage.getItem("helper-preset"));
+    } else {
+      printData("helper","none");
+    }
   }  
 })
 
@@ -99,8 +119,8 @@ $(".helper .photo").click(function() {
 });
 
 //Print inputted data and images at specified position
-function printData(position) {
-  setPhoto(position);
+function printData(position,preset) {
+  setPhoto(position,preset);
   $("." + position + " .stats").html("");
   $("." + position + " .stats").html(getDataString);
 }
@@ -112,9 +132,64 @@ function removeData(position) {
 }
 
 //Set photo for added daemon and remove dashed border and + icon
-function setPhoto(position) {
+function setPhoto(position,preset) {
   $("." + position + " .photo").removeClass("dashed");
-  $("." + position + " .photo span").replaceWith("<img src=\"images/Blank.png\">");
+  if(preset == "TE") {
+    if($("." + position + " .photo").has("img").length) {
+      $("." + position + " .photo img").replaceWith("<img src=\"images/Titanium_Elf.png\">"); 
+      $("." + position + " .photo span").replaceWith("<img src=\"images/Titanium_Elf.png\">");
+    } else {
+      $("." + position + " .photo span").replaceWith("<img src=\"images/Titanium_Elf.png\">");    
+    }
+  } else if(preset == "A") {
+    if($("." + position + " .photo").has("img").length) {
+      $("." + position + " .photo img").replaceWith("<img src=\"images/Amanojaku.png\">");   
+    } else {
+      $("." + position + " .photo span").replaceWith("<img src=\"images/Amanojaku.png\">");         
+    }
+  } else if(preset == "F") {
+    if($("." + position + " .photo").has("img").length) {
+      $("." + position + " .photo img").replaceWith("<img src=\"images/Freyr.png\">");
+    } else {
+      $("." + position + " .photo span").replaceWith("<img src=\"images/Freyr.png\">");   
+    }
+  } else if(preset == "K") {
+    if($("." + position + " .photo").has("img").length) {
+      $("." + position + " .photo img").replaceWith("<img src=\"images/Katsushika_Hokusai.png\">");
+    } else {
+      $("." + position + " .photo span").replaceWith("<img src=\"images/Katsushika_Hokusai.png\">");   
+    }
+  } else if(preset == "TNY") {
+    if($("." + position + " .photo").has("img").length) {
+      $("." + position + " .photo img").replaceWith("<img src=\"images/Titania_New_Year.png\">");
+    } else {
+      $("." + position + " .photo span").replaceWith("<img src=\"images/Titania_New_Year.png\">");   
+    }
+  } else if(preset == "B") {
+    if($("." + position + " .photo").has("img").length) {
+      $("." + position + " .photo img").replaceWith("<img src=\"images/Belphegor.png\">");
+    } else {
+      $("." + position + " .photo span").replaceWith("<img src=\"images/Belphegor.png\">");   
+    }
+  } else if(preset == "S") {
+    if($("." + position + " .photo").has("img").length) {
+      $("." + position + " .photo img").replaceWith("<img src=\"images/Socrates.png\">");
+    } else {
+      $("." + position + " .photo span").replaceWith("<img src=\"images/Socrates.png\">");   
+    }
+  } else if(preset == "G") {
+    if($("." + position + " .photo").has("img").length) {
+      $("." + position + " .photo img").replaceWith("<img src=\"images/Guillotine.png\">");
+    } else {
+      $("." + position + " .photo span").replaceWith("<img src=\"images/Guillotine.png\">");   
+    }    
+  } else {
+    if($("." + position + " .photo").has("img").length.length) {
+      $("." + position + " .photo img").replaceWith("<img src=\"images/Blank.png\">");
+    } else {
+      $("." + position + " .photo span").replaceWith("<img src=\"images/Blank.png\">");   
+    }
+  }
 }
 
 //Replace photo with dashed border and + icon
@@ -361,27 +436,169 @@ function removeDaemon(position) {
   removeData(position);
 }
 
-/*function addPreset(preset) {
+function addPreset(preset) {
   
   if(preset == "TE") {
-    $("#role").val() = "ranged";
-    $("#type").val() = "D";
-    $("#atk").val() = 11694;
-    $("#hp").val() = 9546;
-    $("#skill-dmg").val() = 2847;
-    $("#targets").val() = 1;
-    $("#sort-order").val() = "";
-    $("#skill-effect").val() = "DMG_DEALT";
+    $("#role").val("ranged");
+    $("#type").val("Divina");
+    $("#atk").val(11694);
+    $("#hp").val(9546);
+    $("#skill-dmg").val(2847);
+    $("#targets").val("target-1");
+    $("#sort-order").val("");
+    $("#skill-effect").val("DMG_DEALT");
+    $("#effect-num-format").val("percent");
+    $("#effect-val").val(57);
+    $("#bond-1").val("");
+    $("#bond-2").val("");
+    $("#bond-3").val("");
+  }
+  if(preset == "A") {
+    $("#role").val("ranged");
+    $("#type").val("Phantasma");
+    $("#atk").val(11034);
+    $("#hp").val(6866);
+    $("#skill-dmg").val(3894);
+    $("#targets").val("target-1");
+    $("#sort-order").val("HIGH_HP");
+    $("#skill-effect").val("DMG_DEALT");
+    $("#effect-num-format").val("percent");
+    $("#effect-val").val(74);
+    $("#bond-1").val("");
+    $("#bond-2").val("");
+    $("#bond-3").val("");    
+  }
+  if(preset == "F") {
+    $("#role").val("ranged");
+    $("#type").val("Divina");
+    $("#atk").val(10023);
+    $("#hp").val(9546);
+    $("#skill-dmg").val("");
+    $("#targets").val("target-all");
+    $("#sort-order").val("");
+    $("#skill-effect").val("DMG_INCREASE");
+    $("#effect-num-format").val("percent");
+    $("#effect-val").val(43);
+    $("#bond-1").val("");
+    $("#bond-2").val("");
+    $("#bond-3").val("");    
   }  
+  if(preset == "K") {
+    $("#role").val("ranged");
+    $("#type").val("Divina");
+    $("#atk").val(8337);
+    $("#hp").val(6376);
+    $("#skill-dmg").val("");
+    $("#targets").val("target-2");
+    $("#sort-order").val("HIGH_ATK");
+    $("#skill-effect").val("CRIT_RATE");
+    $("#effect-num-format").val("percent");
+    $("#effect-val").val(55);
+    $("#bond-1").val("");
+    $("#bond-2").val("");
+    $("#bond-3").val("");     
+  }
+  if(preset == "TNY") {
+    $("#role").val("ranged");
+    $("#type").val("Phantasma");
+    $("#atk").val(14081);
+    $("#hp").val(9188);
+    $("#skill-dmg").val(6160);
+    $("#targets").val("target-1");
+    $("#sort-order").val("HIGH_HP");
+    $("#skill-effect").val("");
+    $("#effect-num-format").val("");
+    $("#effect-val").val("");
+    $("#bond-1").val("");
+    $("#bond-2").val("");
+    $("#bond-3").val("");     
+  } 
+  if(preset == "B") {
+    $("#role").val("ranged");
+    $("#type").val("Phantasma");
+    $("#atk").val(13126);
+    $("#hp").val(8533);
+    $("#skill-dmg").val(3294);
+    $("#targets").val("target-3");
+    $("#sort-order").val("HIGH_ATK");
+    $("#skill-effect").val("");
+    $("#effect-num-format").val("");
+    $("#effect-val").val("");
+    $("#bond-1").val("");
+    $("#bond-2").val("");
+    $("#bond-3").val("");     
+  }   
+  if(preset == "S") {
+    $("#role").val("ranged");
+    $("#type").val("Divina");
+    $("#atk").val(11336);
+    $("#hp").val(9546);
+    $("#skill-dmg").val("");
+    $("#targets").val("target-all");
+    $("#sort-order").val("");
+    $("#skill-effect").val("CONST_DMG_DEALT");
+    $("#effect-num-format").val("int");
+    $("#effect-val").val(1220);
+    $("#bond-1").val("");
+    $("#bond-2").val("");
+    $("#bond-3").val("");     
+  }     
+  if(preset == "G") {
+    $("#role").val("ranged");
+    $("#type").val("Anima");
+    $("#atk").val(14081);
+    $("#hp").val(9188);
+    $("#skill-dmg").val(6061);
+    $("#targets").val("target-1");
+    $("#sort-order").val("HIGH_HP");
+    $("#skill-effect").val("");
+    $("#effect-num-format").val("");
+    $("#effect-val").val("");
+    $("#bond-1").val("");
+    $("#bond-2").val("");
+    $("#bond-3").val("");     
+  }       
+  
+  var position = $(".position p").text();
+  
+  if(position == "Leader") {
+    storeSessionData(position);
+    printData("leader",preset);
+    sessionStorage.setItem("leader-preset",preset);
+    sessionStorage.setItem("set-leader","true");
+  } else if(position == "Sub 1") {
+    storeSessionData(position);
+    printData("sub1",preset);
+    sessionStorage.setItem("sub1-preset",preset);
+    sessionStorage.setItem("set-sub1","true");
+  } else if(position == "Sub 2") {
+    storeSessionData(position);
+    printData("sub2",preset);
+    sessionStorage.setItem("sub2-preset",preset);
+    sessionStorage.setItem("set-sub2","true");
+  } else if(position == "Sub 3") {
+    storeSessionData(position);
+    printData("sub3",preset);
+    sessionStorage.setItem("sub3-preset",preset);
+    sessionStorage.setItem("set-sub3","true");
+  } else {
+    storeSessionData(position);
+    printData("helper",preset);
+    sessionStorage.setItem("helper-preset",preset);
+    sessionStorage.setItem("set-helper","true");
+  }
+  
+  $(".modal").modal('hide');
+  $('#daemon-form').find('input,select').val('');
 }
 
-$("#select-daemon").click(function(event) {
+$("#select-preset").click(function(event) {
   event.preventDefault();
   
   var preset = $("#presets").val();
   
   addPreset(preset);
-})*/
+})
 
 //Actions for clicking the Remove Daemon button
 //Removes daemon at specified position
@@ -414,19 +631,39 @@ $("#update-daemon").click(function(event) {
   
   if(position == "Leader") {
     storeSessionData(position);
-    printData("leader");
+    if(sessionStorage.getItem("leader-preset") !== "none") {
+      printData("leader",sessionStorage.getItem("leader-preset"));
+    } else {
+      printData("leader","none");
+    }
   } else if(position == "Sub 1") {
     storeSessionData(position);
-    printData("sub1");
+    if(sessionStorage.getItem("sub1-preset") !== "none") {
+      printData("sub1",sessionStorage.getItem("sub1-preset"));
+    } else {
+      printData("sub1","none");
+    }
   } else if(position == "Sub 2") {
     storeSessionData(position);
-    printData("sub2");
+    if(sessionStorage.getItem("sub2-preset") !== "none") {
+      printData("sub2",sessionStorage.getItem("sub2-preset"));
+    } else {
+      printData("sub2","none");
+    }
   } else if(position == "Sub 3") {
     storeSessionData(position);
-    printData("sub3");
+    if(sessionStorage.getItem("sub3-preset") !== "none") {
+      printData("sub3",sessionStorage.getItem("sub3-preset"));
+    } else {
+      printData("sub3","none");
+    }
   } else {
     storeSessionData(position);
-    printData("helper");
+    if(sessionStorage.getItem("helper-preset") !== "none") {
+      printData("helper",sessionStorage.getItem("helper-preset"));
+    } else {
+      printData("helper","none");
+    }
   }
   
   $(".modal").modal('hide');
@@ -442,20 +679,25 @@ $("#add-daemon").click(function(event) {
   storeSessionData(position);
   
   if(position == "Leader") {
-    printData("leader");
+    printData("leader","none");
     sessionStorage.setItem("set-leader","true");
+    sessionStorage.setItem("leader-preset","none");
   } else if(position == "Sub 1") {
-    printData("sub1");
+    printData("sub1","none");
     sessionStorage.setItem("set-sub1","true");
+    sessionStorage.setItem("sub1-preset","none");
   } else if(position == "Sub 2") {
-    printData("sub2");
+    printData("sub2","none");
     sessionStorage.setItem("set-sub2","true");
+    sessionStorage.setItem("sub2-preset","none");
   } else if(position == "Sub 3") {
-    printData("sub3");
+    printData("sub3","none");
     sessionStorage.setItem("set-sub3","true");
+    sessionStorage.setItem("sub3-preset","none");
   } else {
-    printData("helper");
+    printData("helper","none");
     sessionStorage.setItem("set-helper","true");
+    sessionStorage.setItem("helper-preset","none");
   } 
   
   $(".modal").modal('hide');

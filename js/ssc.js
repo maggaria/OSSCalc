@@ -80,10 +80,10 @@ function load_common_daemons() {
   none = new DaemonRole("none", 0.1);
   daemons["A1"] = new Daemon(ranged, "P", 0, 0, 3174, new Bonds(0,0,0), [], [new Effect("DMG_DEALT", 0.6, 5, null)]);
   daemons["A3"] = new Daemon(ranged, "P", 0, 0, 3693, new Bonds(0,0,0), [], [new Effect("DMG_DEALT", 0.67, 5, null)]);
-  daemons["A2"] = new Daemon(ranged, "P", 11034, 0, 3894, new Bonds(0,0,2), [], [new Effect("DMG_DEALT", 0.74, 5, null)]); 
+  daemons["A2"] = new Daemon(ranged, "P", 11034, 0, 3894, new Bonds(0,0,0), [], [new Effect("DMG_DEALT", 0.74, 1, null)]); 
   daemons["T1"] = new Daemon(ranged, "D", 0, 0, 2813, new Bonds(0,0,2), [], [new Effect("DMG_DEALT", 0.52, 5, null)]);
   daemons["T1.5"] = new Daemon(ranged, "D", 0, 0, 2813, new Bonds(0,0,2), [new Effect("CRIT_RATE", 0.21, 0, null), new Effect("CRIT_DMG", 0.5, 0, null)], [new Effect("DMG_DEALT", 0.52, 5, null)]);
-  daemons["T2"] = new Daemon(ranged, "D", 0, 0, 2847, new Bonds(0,0,3), [new Effect("CRIT_RATE", 0.21, 0, null), new Effect("CRIT_DMG", 0.5, 0 , null)], [new Effect("DMG_DEALT", 0.57, 5, null)]);
+  daemons["T2"] = new Daemon(ranged, "D", 0, 0, 2847, new Bonds(0,0,0), [], [new Effect("DMG_DEALT", 0.57, 1, null)]);
   daemons["T3"] = new Daemon(ranged, "D", 11221, 0, 3141, new Bonds(0,0,0), [new Effect("CRIT_RATE", 0.21, 0, null), new Effect("CRIT_DMG", 0.5, 0, null)], [new Effect("DMG_DEALT", 0.55, 5, null)]);
   daemons["NYT"] = new Daemon(ranged, "P", 1, 0, 5160, new Bonds(0,0,1), [new Effect("CRIT_RATE", 0.05, 0, null)], []);
   daemons["F"] = new Daemon(ranged, "D", 9246, 0, 0, new Bonds(0,0,1), [], [new Effect("DMG_INCREASE", 0.38, 5, null)]);

@@ -71,4 +71,22 @@ img:hover {
   padding: 2em;
   font-weight: bold; }
 
+#about-title {
+  margin-left: 2em;
+  margin-right: 2em;
+  border-bottom: 1px solid gray;
+}
+
+.about-text {
+  padding-top: 1em;
+  padding-bottom: 1em;
+  padding-left: 3em;
+  padding-right: 3em;
+  text-align: left;
+}
+
+.credits {
+  text-align:center;
+}
+
 /*# sourceMappingURL=style.css.map */

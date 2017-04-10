@@ -8,8 +8,7 @@
 </head>
 
 <body>
-
-  <h1>Otogi Skill Sequence Calculator</h1>
+  <h1><span class="label label-info">BETA</span> Otogi Skill Sequence Calculator</span></h1>
   
   <div class="team row">
     <div class="daemon leader"><div class="photo dashed" data-toggle="modal" data-target="#daemon-form"><span>+</span></div><h4>Leader</h4><div class="stats"></div></div>
@@ -33,7 +32,38 @@
   </div>
   
   <div class="result">
+
   
+  </div>
+
+  <div class="about" data-toggle="modal" data-target="#about-blurb"><h1><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></h1></div>
+
+  <div class="modal fade" id="about-blurb">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+      <div id="about-title" class="row">
+        <h3> How is this calculated?</h3>
+      </div>
+      <div class="row about-text">
+        This calculator is by no means an accurate representation of how much damage you will do to a boss; there are many factors that have yet to be added to the model. Since survivability is not considered, the team that does the most damage according to this calculator will likely not be able to make it in one piece to the last stage. However, you may use it to approximate the impact of using one sub's skill one more time over another sub's skill and get a rough idea of how you should structure your skill sequence.
+        <br>
+        <br>
+        The following are currently considered:
+        <ul>
+          <li> Skill DMG </li>
+          <li> Skill DMG buffs </li>
+          <li> Enemy debuffs</li>
+          <li> Crit Rate (est. 0.4 for ranged, 0.2 for melee) </li>
+          <li> Crit DMG buffs </li>
+        </ul>
+        More to come in the future!
+        <br/>
+        <div class="credits">
+          Credits: <a href="http://otogidb.com/buffs-debuffs/">Formulae from OtogiDB</a>
+        </div>
+      </div>
+      </div>
+    </div>
   </div>
   
   <div class="modal fade" id="daemon-form">

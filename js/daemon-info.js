@@ -455,82 +455,112 @@ $("#add-daemon").click(function(event) {
 $("#submit-seq").click(function(event) {
   event.preventDefault();
   
+  var numDaemons = 0;
+  var hasLeader = false;
+  var hasHelper = false;  
+  
   if(sessionStorage.getItem("set-leader") == "true") {
     fillModal("leader");
     addDaemon("L");
     clearModal();
+    numDaemons++;
+    hasLeader = true;
   }
   if(sessionStorage.getItem("set-sub1") == "true") {
     fillModal("sub1");
     addDaemon("S1");
     clearModal();    
+    numDaemons++;
   }
   if(sessionStorage.getItem("set-sub2") == "true") {
     fillModal("sub2");
     addDaemon("S2");
-    clearModal();    
+    clearModal();   
+    numDaemons++;
   }
   if(sessionStorage.getItem("set-sub3") == "true") {
     fillModal("sub3");
     addDaemon("S3");
-    clearModal();    
+    clearModal();   
+    numDaemons++;
   }
   if(sessionStorage.getItem("set-helper") == "true") {
     fillModal("helper");
     addDaemon("H");
-    clearModal();     
+    clearModal();  
+    numDaemons++;
+    hasHelper = true;
   }  
   
-  var seqInput = $("#skill-sequence").val().split(',');
-  
-  var result = run_calc(seqInput);
-  var shards = n_shards(seqInput);
+  if(numDaemons > 1 && hasLeader && hasHelper) {
+    var seqInput = $("#skill-sequence").val().split(',');
 
-  var shardstring = "";
-  for (var i = 0; i < shards; i++) {
-    shardstring += "&#9679;";
+    var result = run_calc(seqInput);
+    var shards = n_shards(seqInput);
+
+    var shardstring = "";
+    for (var i = 0; i < shards; i++) {
+      shardstring += "&#9679;";
+    }
+
+    $(".result").html("Result: " + result + " (<span style='color:#55AEFE;'>" + shardstring + "</span>)");
+  } else {
+    $(".result").html("Error: Invalid Team. Team must have a leader and a helper.");
   }
-  
-  $(".result").html("Result: " + result + " (<span style='color:#55AEFE;'>" + shardstring + "</span>)");
 });
 
 $("#optimize-seq").click(function() {
   event.preventDefault();
 
+  var numDaemons = 0;
+  var hasLeader = false;
+  var hasHelper = false;
+  
   if(sessionStorage.getItem("set-leader") == "true") {
     fillModal("leader");
     addDaemon("L");
     clearModal();
+    numDaemons++;
+    hasLeader = true;
   }
   if(sessionStorage.getItem("set-sub1") == "true") {
     fillModal("sub1");
     addDaemon("S1");
     clearModal();    
+    numDaemons++;
   }
   if(sessionStorage.getItem("set-sub2") == "true") {
     fillModal("sub2");
     addDaemon("S2");
     clearModal();    
+    numDaemons++;
   }
   if(sessionStorage.getItem("set-sub3") == "true") {
     fillModal("sub3");
     addDaemon("S3");
     clearModal();    
+    numDaemons++;
   }
   if(sessionStorage.getItem("set-helper") == "true") {
     fillModal("helper");
     addDaemon("H");
     clearModal();     
+    numDaemons++;
+    hasHelper = true;
   }    
   
-  var seqInput = $("#skill-sequence").val().split(',');
-  var origDmg = run_calc(seqInput);
+  if(numDaemons > 1 && hasLeader && hasHelper) {
+    var seqInput = $("#skill-sequence").val().split(',');
+    var origDmg = run_calc(seqInput);
 
-  var result = find_best(uniquePermute(seqInput));
-  var resultDmg = run_calc(result);
+    var result = find_best(uniquePermute(seqInput));
+    var resultDmg = run_calc(result);
 
-  var dmgDiff = resultDmg - origDmg;
-  var dmgDiffString = (dmgDiff > 0)? "<span style='color:green'>+" + (dmgDiff|0).toString() + "</span>" : "<span style='color:red'>" + (dmgDiff|0).toString() + "</span>";
+    var dmgDiff = resultDmg - origDmg;
+    var dmgDiffString = (dmgDiff > 0)? "<span style='color:green'>+" + (dmgDiff|0).toString() + "</span>" : "<span style='color:red'>" + (dmgDiff|0).toString() + "</span>";
 
-  $(".result").html("Best Sequence: " + result.join(" ") + " <br>Expected Damage: " + (resultDmg|0) + " (" + dmgDiffString + ")");
+    $(".result").html("Best Sequence: " + result.join(" ") + " <br>Expected Damage: " + (resultDmg|0) + " (" + dmgDiffString + ")");
+  } else {
+    $(".result").html("Error: Invalid Team. Team must have a leader and a helper.");
+  }
 })

@@ -774,7 +774,7 @@ $("#submit-seq").click(function(event) {
   }
 });
 
-$("#optimize-seq").click(function() {
+$("#optimize-seq").click(function(event) {
   event.preventDefault();
 
   var numDaemons = 0;

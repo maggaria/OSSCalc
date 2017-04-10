@@ -7,13 +7,13 @@ SELF_TARGET = 0;
 var daemons = {};
 var effect_matrix = {};
 
-function calculate_damage(skill_sequence, seq_daemons) {
+function calculate_damage(skill_sequence, seq_daemons, daemons) {
   if(skill_sequence.length < 1) {
     return 0;
   } else {
     var last_daemon = daemons[skill_sequence[skill_sequence.length-1]];
     var prev_skills = skill_sequence.slice(0,skill_sequence.length-1);
-    var prev_damage = calculate_damage(prev_skills, seq_daemons);
+    var prev_damage = calculate_damage(prev_skills, seq_daemons, daemons);
     var current_damage = last_daemon.calculate_current_damage();
     var total_damage = current_damage + prev_damage;
     update_effect_matrix(last_daemon, seq_daemons);
@@ -97,9 +97,21 @@ function load_common_daemons() {
 function run_calc(skill_sequence) {
   load_common_daemons();
   var seq_daemons = array_to_set(skill_sequence);
-  var result = calculate_damage(skill_sequence, seq_daemons);
+  var daemon_copies = copy_templates(seq_daemons);
+  var result = calculate_damage(skill_sequence, seq_daemons, daemon_copies);
   clear_matrix();
   return result;
+}
+
+function copy_templates(seq_daemons) {
+  var copies = {};
+  var unique_daemons = Array.from(seq_daemons);
+  unique_daemons.forEach(function(daemon) {
+    var template = daemons[daemon];
+    var copy = Object.create(template);
+    copies[daemon] = copy;
+  });
+  return copies;
 }
 
 function find_best(skill_sequences) {

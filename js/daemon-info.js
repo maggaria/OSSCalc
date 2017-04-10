@@ -349,9 +349,9 @@ function addDaemon(position) {
   }  
   
   if(skillEffect == "") {
-    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], []);
+    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], null, []);
   } else {
-    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(skillEffect,effectVal, targets, sortOrder)]);
+    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], new Skill(new Effect(buffType,buffVal), new Target("sort", null, targets, sortOrder)), []);
   }
 }
 

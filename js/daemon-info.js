@@ -327,18 +327,30 @@ function getDataString() {
     bond3 = 0;
   }
   
-  return "<h5>Role: " + role + "</h5>"
-        +"<h5>Type: " + type + "</h5>"
-        +"<h5>ATK: " + atk + "</h5>"
-        +"<h5>HP: " + hp + "</h5>"
-        +"<h5>Skill DMG: " + skillDmg + "</h5>"
-        +"<h5>Targets: " + targets + "</h5>"
-        +"<h5>Sort Order: " + sortOrder + "</h5>"
-        +"<h5>Skill Effect: " + skillEffect + "</h5>"
-        +"<h5>Effect Value: " + effectVal + "</h5>"
-        +"<h5>First Bond: " + bond1 + "</h5>"
-        +"<h5>Second Bond: " + bond2 + "</h5>"
-        +"<h5>Third Bond: " + bond3 + "</h5>";
+  return buildDaemonInformationDisplay(role[0].toUpperCase() + role.slice(1), type, atk, hp, skillDmg, targets, sortOrder, skillEffect, effectVal, bond1, bond2, bond3);
+}
+
+function buildDaemonInformationDisplay(role,type,atk,hp,skillDmg,targets,sortOrder,skillEffect, effectVal, bond1, bond2, bond3) {
+  var daemonInformationDisplay = "";
+  daemonInformationDisplay += addIconString("images/roles/" + role + ".png");
+  daemonInformationDisplay += addIconString("images/types/" + type + ".png");
+  daemonInformationDisplay += "<h5>" + atk + " <b>ATK</b>/" + hp + " <b>HP</b></h5>";
+  daemonInformationDisplay += "<div>";
+  daemonInformationDisplay += skillDmg? "<h5>Skill DMG: " + skillDmg + "</h5>" : "";
+  daemonInformationDisplay += targets? "<h5>Targets: " + targets + "</h5>" : "";
+  daemonInformationDisplay += sortOrder? "<h5>Sort Order: " + sortOrder + "</h5>" : "";
+  daemonInformationDisplay += skillEffect? "<h5>Skill Effect: " + skillEffect + "</h5>" : "";
+  daemonInformationDisplay += effectVal? "<h5>Effect Value: " + effectVal + "</h5>": "";
+  daemonInformationDisplay += bond1? "<h5>Bonds: " + bond1 + "&#x2606;" : "";
+  daemonInformationDisplay += bond2? ", " + bond2 + "&#x2606;" : "";
+  daemonInformationDisplay += bond3? ", " + bond3 + "&#x2606;" : "";
+  daemonInformationDisplay += bond1? "</h5>" : "";
+  daemonInformationDisplay += "</div>";
+  return daemonInformationDisplay;
+}
+
+function addIconString(src) {
+  return "<img class=\"icon\" src=\"" + src + "\">";
 }
 
 //Add or replace daemon for a specified position in the daemons array
@@ -424,9 +436,9 @@ function addDaemon(position) {
   }  
   
   if(skillEffect == "") {
-    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], []);
+    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], null, []);
   } else {
-    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], [new Effect(skillEffect,effectVal, targets, sortOrder)]);
+    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], new Skill(new Effect(skillEffect,effectVal), new Target("sort", null, targets, sortOrder)), []);
   }
 }
 

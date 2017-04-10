@@ -1,8 +1,5 @@
 //skill sequence calculator
 
-//constants
-SELF_TARGET = 0;
-
 //global test daemon_mapping
 var daemons = {};
 var effect_matrix = {};
@@ -16,40 +13,9 @@ function calculate_damage(skill_sequence, seq_daemons, daemons) {
     var prev_damage = calculate_damage(prev_skills, seq_daemons, daemons);
     var current_damage = last_daemon.calculate_current_damage();
     var total_damage = current_damage + prev_damage;
-    update_effect_matrix(last_daemon, seq_daemons);
+    last_daemon.use_active(daemons);
     return total_damage;
   }
-}
-
-function update_effect_matrix(daemon, seq_daemons) {
-  daemon.skill_effects.forEach(function(effect) {
-    //switch on target type
-    if(effect.num_targets == SELF_TARGET) {
-      //TODO: need an example of this kind of buff
-      return;
-    } else {
-      buff_target_daemons(effect, seq_daemons);
-    }
-    });
-}
-
-function buff_target_daemons(effect, seq_daemons) {
-  num_targets = effect.nt;
-  sort_tag = effect.sort_order;
-
-  targets = seq_daemons;
-
-  if (sort_tag) {
-    sorted = sort_daemons(seq_daemons, sort_tag);
-    targets = sorted.slice(0, num_targets);
-  }
-
-  targets.forEach( function(daemon) {
-    daemons[daemon].add_active_effect(effect);
-    });
-  return;
-
-  
 }
 
 function sort_daemons(daemon_set, sort_by) {
@@ -78,20 +44,22 @@ function load_common_daemons() {
   ranged = new DaemonRole("ranged", 0.4);
   melee = new DaemonRole("melee", 0.2);
   none = new DaemonRole("none", 0.1);
-  daemons["A1"] = new Daemon(ranged, "P", 0, 0, 3174, new Bonds(0,0,0), [], [new Effect("DMG_DEALT", 0.6, 5, null)]);
-  daemons["A3"] = new Daemon(ranged, "P", 0, 0, 3693, new Bonds(0,0,0), [], [new Effect("DMG_DEALT", 0.67, 5, null)]);
-  daemons["A2"] = new Daemon(ranged, "P", 11034, 0, 3894, new Bonds(0,0,0), [], [new Effect("DMG_DEALT", 0.74, 1, null)]); 
-  daemons["T1"] = new Daemon(ranged, "D", 0, 0, 2813, new Bonds(0,0,2), [], [new Effect("DMG_DEALT", 0.52, 5, null)]);
-  daemons["T1.5"] = new Daemon(ranged, "D", 0, 0, 2813, new Bonds(0,0,2), [new Effect("CRIT_RATE", 0.21, 0, null), new Effect("CRIT_DMG", 0.5, 0, null)], [new Effect("DMG_DEALT", 0.52, 5, null)]);
-  daemons["T2"] = new Daemon(ranged, "D", 0, 0, 2847, new Bonds(0,0,0), [], [new Effect("DMG_DEALT", 0.57, 1, null)]);
-  daemons["T3"] = new Daemon(ranged, "D", 11221, 0, 3141, new Bonds(0,0,0), [new Effect("CRIT_RATE", 0.21, 0, null), new Effect("CRIT_DMG", 0.5, 0, null)], [new Effect("DMG_DEALT", 0.55, 5, null)]);
-  daemons["NYT"] = new Daemon(ranged, "P", 1, 0, 5160, new Bonds(0,0,1), [new Effect("CRIT_RATE", 0.05, 0, null)], []);
-  daemons["F"] = new Daemon(ranged, "D", 9246, 0, 0, new Bonds(0,0,1), [], [new Effect("DMG_INCREASE", 0.38, 5, null)]);
-  daemons["K"] = new Daemon(ranged, "D", 6800, 0, 0, new Bonds(0,0,0), [], [new Effect("CRIT_RATE", 0.45, 2, "HIGH_ATK")]);
-  daemons["B1"] = new Daemon(ranged, "P", 12063, 0, 3374, new Bonds(0,0,0), [], []);
-  daemons["G"] = new Daemon(ranged, "A", 12370, 0, 5725, new Bonds(0,0,0), [], []);
-  daemons["S"] = new Daemon(ranged, "D", 0, 0, 0, new Bonds(0,0,0), [], [new Effect("CONST_DMG_DEALT", 1020, 5, null)]);
-  daemons["test"] = new Daemon(none, "A", 10000, 1, 1, new Bonds(0,0,0), [], []);
+  daemons["A1"] = new Daemon(ranged, "P", 0, 0, 3174, new Bonds(0,0,0), [], new Skill(new Effect("DMG_DEALT", 0.6), new Target("sort", null, 5, null)), []);
+  daemons["A3"] = new Daemon(ranged, "P", 0, 0, 3693, new Bonds(0,0,0), [], new Skill(new Effect("DMG_DEALT", 0.67), new Target("sort", null, 5, null)), []);
+  daemons["A2"] = new Daemon(ranged, "P", 11034, 0, 3894, new Bonds(0,0,2), [], new Skill(new Effect("DMG_DEALT", 0.74), new Target("sort", null, 5, null)), []); 
+  daemons["T1"] = new Daemon(ranged, "D", 0, 0, 2813, new Bonds(0,0,2), [], new Skill(new Effect("DMG_DEALT", 0.52), new Target("sort", null, 5, null)), []);
+  daemons["T1.5"] = new Daemon(ranged, "D", 0, 0, 2813, new Bonds(0,0,2), 
+    [new Effect("CRIT_RATE", 0.21, 0, null), new Effect("CRIT_DMG", 0.5)], 
+    new Skill(new Effect("DMG_DEALT", 0.52), new Target("sort", null, 5, null)),[]);
+  daemons["T2"] = new Daemon(ranged, "D", 0, 0, 2847, new Bonds(0,0,3), [new Effect("CRIT_RATE", 0.21), new Effect("CRIT_DMG", 0.5)], new Skill(new Effect("DMG_DEALT", 0.57), new Target("sort", null, 5, null)), []);
+  daemons["T3"] = new Daemon(ranged, "D", 11221, 0, 3141, new Bonds(0,0,0), [new Effect("CRIT_RATE", 0.21), new Effect("CRIT_DMG", 0.5)], new Skill(new Effect("DMG_DEALT", 0.55), new Target("sort", null, 5, null)), []);
+  daemons["NYT"] = new Daemon(ranged, "P", 1, 0, 5160, new Bonds(0,0,1), [new Effect("CRIT_RATE", 0.05)], null, []);
+  daemons["F"] = new Daemon(ranged, "D", 9246, 0, 0, new Bonds(0,0,1), [], new Skill(new Effect("DMG_INCREASE", 0.38), new Target("sort", null, 5, null)), []);
+  daemons["K"] = new Daemon(ranged, "D", 6800, 0, 0, new Bonds(0,0,0), [], new Skill(new Effect("CRIT_RATE", 0.45), new Target("sort", null, 2, "HIGH_ATK")), []);
+  daemons["B1"] = new Daemon(ranged, "P", 12063, 0, 3374, new Bonds(0,0,0), [], null, []);
+  daemons["G"] = new Daemon(ranged, "A", 12370, 0, 5725, new Bonds(0,0,0), [], null, []);
+  daemons["S"] = new Daemon(ranged, "D", 0, 0, 0, new Bonds(0,0,0), [], new Skill(new Effect("CONST_DMG_DEALT", 1020), new Target("sort", null, 5, null)), []);
+  daemons["test"] = new Daemon(none, "A", 10000, 1, 1, new Bonds(0,0,0), [], null, []);
 }
 
 function run_calc(skill_sequence) {

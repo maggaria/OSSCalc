@@ -21,6 +21,10 @@ body {
     .daemon {
       flex-basis: 50%; } }
 
+.icon {
+  width: 34px;
+}
+
 .photo {
   box-sizing: border-box;
   width: 80%;

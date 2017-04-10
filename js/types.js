@@ -1,5 +1,5 @@
 class Daemon {
-  constructor(role, type, atk, hp, skill_atk, bonds, active_effects, skill_effects) {
+  constructor(role, type, atk, hp, skill_atk, bonds, active_effects, skill, passives) {
     this.role = role;
     this.type = type;
     this.atk = atk;
@@ -7,8 +7,59 @@ class Daemon {
     this.skill_atk = skill_atk;
     this.bonds = bonds;
     this.active_effects = active_effects;
-    this.skill_effects = skill_effects;
+    this.skill = skill;
+    this.passives = passives;
     this.build_skill_matrix();
+  }
+
+  apply_passives(all_daemons) {
+    this.passives.forEach(function(passive) {
+      use_skill(passive, all_daemons);
+    }, this);
+    return;
+  }
+
+  use_active(daemons) {
+    this.use_skill(this.skill, daemons);
+  }
+
+  use_skill(skill, daemons) {
+    if(skill){
+      switch(skill.target.target_type){
+        case "self":
+          this.add_active_effect(skill.effect);
+          break;
+        case "name":
+          skill.target.target_value.forEach(function(target_name) {
+              if(daemons[target_name]) {
+                daemons[target_name].add_active_effect(skill.effect);
+              }
+            });
+          break;
+        case "role":
+        case "type":
+          Object.keys(daemons).forEach(function(daemon){
+            if(daemons[daemon][skill.target.target_type] == skill.target.target_value) {
+              daemons[daemon].add_active_effect(skill.effect);
+            }
+          });
+          break;
+        default:
+          var num_targets = skill.target.num_targets;
+          var sort_tag = skill.sort_order;
+
+          var targets = Object.keys(daemons);
+
+          if (sort_tag) {
+            var sorted = sort_daemons(daemons, sort_tag);
+            targets = sorted.slice(0, num_targets);
+          }
+
+          targets.forEach( function(daemon) {
+            daemons[daemon].add_active_effect(skill.effect);
+            });
+      }
+    }
   }
 
   add_active_effect(effect) {
@@ -17,7 +68,7 @@ class Daemon {
   }
 
   update_skill_matrix(effect) {
-    this.skill_matrix[effect.skill_type] = this.skill_matrix[effect.skill_type]? this.skill_matrix[effect.skill_type] + effect.value : effect.value;
+    this.skill_matrix[effect.effect_type] = this.skill_matrix[effect.effect_type]? this.skill_matrix[effect.effect_type] + effect.value : effect.value;
   }
 
   build_skill_matrix() {
@@ -88,10 +139,34 @@ class Bonds {
 }
 
 class Effect {
-  constructor(skill_type, value, num_targets, sort_order) {
-    this.skill_type = skill_type;
+  constructor(effect_type, value) {
+    //Allowed effect types:
+    //CONST_DMG_DEALT (Socrates): debuffs enemy by a fixed amount.
+    //CRIT_DMG (Katsu): buffs target allies' crit DMG by a percentage amount.
+    //CRIT_RATE (Titanium Elf passive): buffs target allies' crit rate by a percentage amount
+    //DMG_INCREASE (Freyr): buffs target allies' damage by a percentage amount.
+    //DMG_DEALT (Amanojaku): debuffs enemy by a percentage amount.
+    this.effect_type = effect_type;
     this.value = value;
-    this.nt = num_targets;
+  }
+}
+
+class Skill {
+  constructor(effect, target) {
+    this.effect = effect;
+    this.target = target;
+  }
+}
+
+class Target {
+  constructor(target_type, target_value, num_targets, sort_order) {
+    //target value is a list of acceptable daemons if target_type is "name",
+    //the role if target_type is "role",
+    //the type if target_type is "type",
+    //unused if the target_type is "sort" or "self"
+    this.target_type = target_type;
+    this.target_value = target_value;
+    this.num_targets = num_targets;
     this.sort_order = sort_order;
   }
 }

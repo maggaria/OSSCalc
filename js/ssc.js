@@ -44,6 +44,7 @@ function load_common_daemons() {
   ranged = new DaemonRole("ranged", 0.4);
   melee = new DaemonRole("melee", 0.2);
   none = new DaemonRole("none", 0.1);
+  healer = new DaemonRole("healer", 0.4);
   daemons["A1"] = new Daemon(ranged, "P", 0, 0, 3174, new Bonds(0,0,0), [], new Skill(new Effect("DMG_DEALT", 0.6), new Target("sort", null, 5, null)), []);
   daemons["A3"] = new Daemon(ranged, "P", 0, 0, 3693, new Bonds(0,0,0), [], new Skill(new Effect("DMG_DEALT", 0.67), new Target("sort", null, 5, null)), []);
   daemons["A2"] = new Daemon(ranged, "P", 11034, 0, 3894, new Bonds(0,0,2), [], new Skill(new Effect("DMG_DEALT", 0.74), new Target("sort", null, 5, null)), []); 

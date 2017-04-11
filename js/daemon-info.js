@@ -369,6 +369,9 @@ function addDaemon(position) {
     case "ranged":
       role = new DaemonRole("ranged", 0.4);
       break;
+    case "healer":
+      role = new DaemonRole("healer", 0.4);
+      break;
   }
   
   var type;
@@ -485,7 +488,7 @@ function addPreset(preset) {
     $("#bond-3").val("");    
   }
   if(preset == "F") {
-    $("#role").val("ranged");
+    $("#role").val("healer");
     $("#type").val("Divina");
     $("#atk").val(10023);
     $("#hp").val(9546);

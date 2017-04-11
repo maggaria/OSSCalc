@@ -41,6 +41,10 @@ $(document).ready(function() {
     }
   }  
 })
+//Set tooltips.
+$(document).ready(function(){
+    $('[data-toggle="tooltip"]').tooltip(); 
+});
 
 //For daemons already set:
 //Populate modal with stored data
@@ -332,8 +336,8 @@ function getDataString() {
 
 function buildDaemonInformationDisplay(role,type,atk,hp,skillDmg,targets,sortOrder,skillEffect, effectVal, bond1, bond2, bond3) {
   var daemonInformationDisplay = "";
-  daemonInformationDisplay += addIconString("images/roles/" + role + ".png");
-  daemonInformationDisplay += addIconString("images/types/" + type + ".png");
+  daemonInformationDisplay += addIconString("images/roles/" + role + ".png", role, "left");
+  daemonInformationDisplay += addIconString("images/types/" + type + ".png", type, "right");
   daemonInformationDisplay += "<h5>" + atk + " <b>ATK</b>/" + hp + " <b>HP</b></h5>";
   daemonInformationDisplay += "<div>";
   daemonInformationDisplay += skillDmg? "<h5>Skill DMG: " + skillDmg + "</h5>" : "";
@@ -349,8 +353,8 @@ function buildDaemonInformationDisplay(role,type,atk,hp,skillDmg,targets,sortOrd
   return daemonInformationDisplay;
 }
 
-function addIconString(src) {
-  return "<img class=\"icon\" src=\"" + src + "\">";
+function addIconString(src, tooltip, direction) {
+  return "<a href=\"#\" data-toggle=\"tooltip\" data-placement=\"" + direction + "\" title=\"" + tooltip + "\"><img class=\"icon\" src=\"" + src + "\"></a>";
 }
 
 //Add or replace daemon for a specified position in the daemons array

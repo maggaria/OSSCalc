@@ -354,7 +354,7 @@ function buildDaemonInformationDisplay(role,type,atk,hp,skillDmg,targets,sortOrd
 }
 
 function addIconString(src, tooltip, direction) {
-  return "<a href=\"#\" data-toggle=\"tooltip\" data-placement=\"" + direction + "\" title=\"" + tooltip + "\"><img class=\"icon\" src=\"" + src + "\"></a>";
+  return "<a href=\"javascript: void(0);\" data-toggle=\"tooltip\" data-placement=\"" + direction + "\" title=\"" + tooltip + "\"><img class=\"icon\" src=\"" + src + "\"></a>";
 }
 
 //Add or replace daemon for a specified position in the daemons array

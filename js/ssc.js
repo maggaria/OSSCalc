@@ -53,7 +53,7 @@ function load_common_daemons() {
     new Skill(new Effect("DMG_DEALT", 0.52), new Target("sort", null, 5, null)),[]);
   daemons["T2"] = new Daemon(ranged, "D", 0, 0, 2847, new Bonds(0,0,3), [new Effect("CRIT_RATE", 0.21), new Effect("CRIT_DMG", 0.5)], new Skill(new Effect("DMG_DEALT", 0.57), new Target("sort", null, 5, null)), []);
   daemons["T3"] = new Daemon(ranged, "D", 11221, 0, 3141, new Bonds(0,0,0), [new Effect("CRIT_RATE", 0.21), new Effect("CRIT_DMG", 0.5)], new Skill(new Effect("DMG_DEALT", 0.55), new Target("sort", null, 5, null)), []);
-  daemons["NYT"] = new Daemon(ranged, "P", 1, 0, 5160, new Bonds(0,0,1), [new Effect("CRIT_RATE", 0.05)], null, []);
+  daemons["NYT"] = new Daemon(ranged, "P", 1, 0, 5160, new Bonds(0,0,1), [new Effect("CRIT_RATE", 0.05)], null, [new Skill(new Effect("CRIT_DMG", 0.2), new Target("type", "P", null, null))]);
   daemons["F"] = new Daemon(ranged, "D", 9246, 0, 0, new Bonds(0,0,1), [], new Skill(new Effect("DMG_INCREASE", 0.38), new Target("sort", null, 5, null)), []);
   daemons["K"] = new Daemon(ranged, "D", 6800, 0, 0, new Bonds(0,0,0), [], new Skill(new Effect("CRIT_RATE", 0.45), new Target("sort", null, 2, "HIGH_ATK")), []);
   daemons["B1"] = new Daemon(ranged, "P", 12063, 0, 3374, new Bonds(0,0,0), [], null, []);
@@ -66,6 +66,9 @@ function run_calc(skill_sequence) {
   load_common_daemons();
   var seq_daemons = array_to_set(skill_sequence);
   var daemon_copies = copy_templates(seq_daemons);
+  Object.keys(daemon_copies).forEach(function (daemon) {
+    daemon_copies[daemon].apply_passives(daemon_copies);
+  });
   var result = calculate_damage(skill_sequence, seq_daemons, daemon_copies);
   clear_matrix();
   return result;

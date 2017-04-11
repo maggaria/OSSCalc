@@ -149,8 +149,13 @@ function n_shards(skill_sequence) {
     hash[daemon] = hash[daemon]? hash[daemon]+1 : 1;
   });
   Object.keys(hash).forEach(function(daemon){
-    //Gauss summation.
-    shards += (hash[daemon]*(hash[daemon]+1))/2;
+    if(hash[daemon] < 3) {
+      //Gauss summation.
+      shards += (hash[daemon]*(hash[daemon]+1))/2;
+    } else {
+      shards += 6;
+      shards += (hash[daemon]-3)*3;
+    }
   });
   return shards;
 }

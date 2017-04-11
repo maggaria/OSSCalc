@@ -76,10 +76,25 @@ function copy_templates(seq_daemons) {
   var unique_daemons = Array.from(seq_daemons);
   unique_daemons.forEach(function(daemon) {
     var template = daemons[daemon];
-    var copy = Object.create(template);
+    var copy = clone_daemon(template);
     copies[daemon] = copy;
   });
   return copies;
+}
+
+function clone_daemon(daemon) {
+  var bonds = daemon.bonds? new Bonds(daemon.bonds.three, daemon.bonds.four, daemon.bonds.five) : null;
+  var active_effects = [];
+  daemon.active_effects.forEach(function(effect){
+    active_effects.push(new Effect(effect.effect_type, effect.value));
+  });
+  var skill = daemon.skill? new Skill(daemon.skill.effect, daemon.skill.target) : null;
+  var passives = [];
+  daemon.passives.forEach(function(passive){
+    passives.push(new Skill(passive.effect, passive.target));
+  });
+  return new Daemon(daemon.role, daemon.type, daemon.atk, daemon.hp,
+    daemon.skill_atk, bonds, active_effects, skill, passives);
 }
 
 function find_best(skill_sequences) {

@@ -339,7 +339,7 @@ function buildDaemonInformationDisplay(role,type,atk,hp,skillDmg,targets,sortOrd
   daemonInformationDisplay += addIconString("images/roles/" + role + ".png", role, "left");
   daemonInformationDisplay += addIconString("images/types/" + type + ".png", type, "right");
   daemonInformationDisplay += "<h5>" + atk + " <b>ATK</b>/" + hp + " <b>HP</b></h5>";
-  daemonInformationDisplay += "<div>";
+  daemonInformationDisplay += "<div class=\"hidden\">";
   daemonInformationDisplay += skillDmg? "<h5>Skill DMG: " + skillDmg + "</h5>" : "";
   daemonInformationDisplay += targets? "<h5>Targets: " + targets + "</h5>" : "";
   daemonInformationDisplay += sortOrder? "<h5>Sort Order: " + sortOrder + "</h5>" : "";

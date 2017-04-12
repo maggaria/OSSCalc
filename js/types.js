@@ -14,7 +14,7 @@ class Daemon {
 
   apply_passives(all_daemons) {
     this.passives.forEach(function(passive) {
-      use_skill(passive, all_daemons);
+      this.use_skill(passive, all_daemons);
     }, this);
     return;
   }

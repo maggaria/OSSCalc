@@ -643,15 +643,11 @@ $("#add-daemon").click(function(event) {
 
 //Run calculations on the daemons submitted
 $("#submit-seq").click(function(event) {
-  event.preventDefault();
+  event.preventDefault();  
   
-  var numDaemons = 0;
-  var hasLeader = false;
-  var hasHelper = false;  
+  var constraints = prepareDaemons();
   
-  prepareDaemons(numDaemons, hasLeader, hasHelper);
-  
-  if(numDaemons > 1 && hasLeader && hasHelper) {
+  if(constraints.numDaemons > 1 && constraints.hasLeader && constraints.hasHelper) {
     var seqInput = $("#skill-sequence").val().split(',');
 
     var result = run_calc(seqInput);
@@ -670,14 +666,10 @@ $("#submit-seq").click(function(event) {
 
 $("#optimize-seq").click(function(event) {
   event.preventDefault();
-
-  var numDaemons = 0;
-  var hasLeader = false;
-  var hasHelper = false;
   
-  prepareDaemons(numDaemons,hasLeader,hasHelper);
+  var constraints = prepareDaemons();
   
-  if(numDaemons > 1 && hasLeader && hasHelper) {
+  if(constraints.numDaemons > 1 && constraints.hasLeader && constraints.hasHelper) {
     var seqInput = $("#skill-sequence").val().split(',');
     var origDmg = run_calc(seqInput);
 
@@ -693,37 +685,44 @@ $("#optimize-seq").click(function(event) {
   }
 })
 
-function prepareDaemons(numDaemons,hasLeader,hasHelper){
+function prepareDaemons(){
+  var constraints = {
+    numDaemons: 0,
+    hasLeader: false,
+    hasHelper: false
+  }
+
   if(sessionStorage.getItem("set-leader") == "true") {
     fillModal("leader");
     addDaemon("L");
     clearModal();
-    numDaemons++;
-    hasLeader = true;
+    constraints.numDaemons++;
+    constraints.hasLeader = true;
   }
   if(sessionStorage.getItem("set-sub1") == "true") {
     fillModal("sub1");
     addDaemon("S1");
     clearModal();    
-    numDaemons++;
+    constraints.numDaemons++;
   }
   if(sessionStorage.getItem("set-sub2") == "true") {
     fillModal("sub2");
     addDaemon("S2");
     clearModal();    
-    numDaemons++;
+    constraints.numDaemons++;
   }
   if(sessionStorage.getItem("set-sub3") == "true") {
     fillModal("sub3");
     addDaemon("S3");
     clearModal();    
-    numDaemons++;
+    constraints.numDaemons++;
   }
   if(sessionStorage.getItem("set-helper") == "true") {
     fillModal("helper");
     addDaemon("H");
     clearModal();     
-    numDaemons++;
-    hasHelper = true;
+    constraints.numDaemons++;
+    constraints.hasHelper = true;
   } 
+  return constraints;
 }

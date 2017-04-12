@@ -1,50 +1,43 @@
 //Remember any set daemons on refresh
 $(document).ready(function() {
   if(sessionStorage.getItem("set-leader") == "true") {
-    fillModal("leader");
-    if(sessionStorage.getItem("leader-preset") !== "none") {
-      printData("leader",sessionStorage.getItem("leader-preset"));
-    } else {
-      printData("leader","none");
-    }
+    setDaemonOnRefresh("leader");
   }
   if(sessionStorage.getItem("set-sub1") == "true") {
-    fillModal("sub1");
-    if(sessionStorage.getItem("sub1-preset") !== "none") {
-      printData("sub1",sessionStorage.getItem("sub1-preset"));
-    } else {
-      printData("sub1","none");
-    }
+    setDaemonOnRefresh("sub1");
   }
   if(sessionStorage.getItem("set-sub2") == "true") {
-    fillModal("sub2");
-    if(sessionStorage.getItem("sub2-preset") !== "none") {
-      printData("sub2",sessionStorage.getItem("sub2-preset"));
-    } else {
-      printData("sub2","none");
-    }
+    setDaemonOnRefresh("sub2");
   }
   if(sessionStorage.getItem("set-sub3") == "true") {
-    fillModal("sub3");
-    if(sessionStorage.getItem("sub3-preset") !== "none") {
-      printData("sub3",sessionStorage.getItem("sub3-preset"));
-    } else {
-      printData("sub3","none");
-    }
+    setDaemonOnRefresh("sub3");
   }
   if(sessionStorage.getItem("set-helper") == "true") {
-    fillModal("helper");
-    if(sessionStorage.getItem("helper-preset") !== "none") {
-      printData("helper",sessionStorage.getItem("helper-preset"));
-    } else {
-      printData("helper","none");
-    }
+    setDaemonOnRefresh("helper");
   }  
 })
+
+function setDaemonOnRefresh(position) {
+  fillModal(position);
+  if(sessionStorage.getItem(position+"-preset") !== "none") {
+    printData(position,sessionStorage.getItem(position+"-preset"));
+  } else {
+    printData(position, "none");
+  }
+}
+
 //Set tooltips.
 $(document).ready(function(){
     $('[data-toggle="tooltip"]').tooltip(); 
 });
+
+var shortPositionToReadable = {
+  "leader":"Leader",
+  "sub1":"Sub 1",
+  "sub2":"Sub 2",
+  "sub3":"Sub 3",
+  "helper":"Helper"
+};
 
 //For daemons already set:
 //Populate modal with stored data
@@ -52,75 +45,43 @@ $(document).ready(function(){
 //For new daemons:
 //Show add button, and hide remove and update buttons
 $(".leader .photo").click(function() {
-  $(".position").html("<label>Position</label><p>Leader</p>");
-  if(sessionStorage.getItem("set-leader") == "true") {
-    $("#add-daemon").hide();
-    $("#remove-daemon").show();
-    $("#update-daemon").show();
-    fillModal("leader");
-  } else {
-    $("#add-daemon").show();
-    $("#remove-daemon").hide();
-    $("#update-daemon").hide();
-    clearModal();
-  }
+  positionClick("leader");
 });
 $(".sub1 .photo").click(function() {
-  $(".position").html("<label>Position</label><p>Sub 1</p>");
-  if(sessionStorage.getItem("set-sub1") == "true") {
-    $("#add-daemon").hide();
-    $("#remove-daemon").show();
-    $("#update-daemon").show();
-    fillModal("sub1");
-  } else {
-    $("#add-daemon").show();
-    $("#remove-daemon").hide();
-    $("#update-daemon").hide();
-    clearModal();
-  }  
+  positionClick("sub1");
 });
 $(".sub2 .photo").click(function() {
-  $(".position").html("<label>Position</label><p>Sub 2</p>");
-  if(sessionStorage.getItem("set-sub2") == "true") {
-    $("#add-daemon").hide();
-    $("#remove-daemon").show();
-    $("#update-daemon").show();
-    fillModal("sub2");
-  } else {
-    $("#add-daemon").show();
-    $("#remove-daemon").hide();
-    $("#update-daemon").hide();
-    clearModal();
-  }    
+  positionClick("sub2");  
 });
 $(".sub3 .photo").click(function() {
-  $(".position").html("<label>Position</label><p>Sub 3</p>");
-  if(sessionStorage.getItem("set-sub3") == "true") {
-    $("#add-daemon").hide();
-    $("#remove-daemon").show();
-    $("#update-daemon").show();
-    fillModal("sub3");
-  } else {
-    $("#add-daemon").show();
-    $("#remove-daemon").hide();
-    $("#update-daemon").hide();
-    clearModal();
-  }    
+  positionClick("sub3");    
 });
 $(".helper .photo").click(function() {
-  $(".position").html("<label>Position</label><p>Helper</p>");
-  if(sessionStorage.getItem("set-helper") == "true") {
-    $("#add-daemon").hide();
-    $("#remove-daemon").show();
-    $("#update-daemon").show();
-    fillModal("helper");
-  } else {
-    $("#add-daemon").show();
-    $("#remove-daemon").hide();
-    $("#update-daemon").hide();
-    clearModal();
-  }    
+  positionClick("sub4");
 });
+
+function positionClick(position) {
+  $(".position").html("<label>Position</label><p>" + shortPositionToReadable[position] + "</p>");
+  if(sessionStorage.getItem("set-"+position)) {
+    populateModalWithDaemonData(position);
+  } else {
+    setupModalForNewDaemon();
+  }
+}
+
+function populateModalWithDaemonData(position) {
+  $("#add-daemon").hide();
+  $("#remove-daemon").show();
+  $("#update-daemon").show();
+  fillModal(position);
+}
+
+function setupModalForNewDaemon() {
+  $("#add-daemon").show();
+  $("#remove-daemon").hide();
+  $("#update-daemon").hide();
+  clearModal();
+}
 
 //Print inputted data and images at specified position
 function printData(position,preset) {
@@ -135,58 +96,27 @@ function removeData(position) {
   $("." + position + " .stats").html("");
 }
 
+var presetImageName = {
+  "TE":"Titanium_Elf",
+  "A":"Amanojaku",
+  "F":"Freyr",
+  "K":"Katsushika_Hokusai",
+  "TNY":"Titania_New_Year",
+  "B":"Belphegor",
+  "S":"Socrates",
+  "G":"Guillotine"
+};
+
 //Set photo for added daemon and remove dashed border and + icon
 function setPhoto(position,preset) {
   $("." + position + " .photo").removeClass("dashed");
-  if(preset == "TE") {
+  if(presetImageName[preset]) {
     if($("." + position + " .photo").has("img").length) {
-      $("." + position + " .photo img").replaceWith("<img src=\"images/Titanium_Elf.png\">"); 
-      $("." + position + " .photo span").replaceWith("<img src=\"images/Titanium_Elf.png\">");
+      $("." + position + " .photo img").replaceWith("<img src=\"images/"+presetImageName[preset]+".png\">"); 
+      $("." + position + " .photo span").replaceWith("<img src=\"images/"+presetImageName[preset]+".png\">");
     } else {
-      $("." + position + " .photo span").replaceWith("<img src=\"images/Titanium_Elf.png\">");    
+      $("." + position + " .photo span").replaceWith("<img src=\"images/"+presetImageName[preset]+".png\">");    
     }
-  } else if(preset == "A") {
-    if($("." + position + " .photo").has("img").length) {
-      $("." + position + " .photo img").replaceWith("<img src=\"images/Amanojaku.png\">");   
-    } else {
-      $("." + position + " .photo span").replaceWith("<img src=\"images/Amanojaku.png\">");         
-    }
-  } else if(preset == "F") {
-    if($("." + position + " .photo").has("img").length) {
-      $("." + position + " .photo img").replaceWith("<img src=\"images/Freyr.png\">");
-    } else {
-      $("." + position + " .photo span").replaceWith("<img src=\"images/Freyr.png\">");   
-    }
-  } else if(preset == "K") {
-    if($("." + position + " .photo").has("img").length) {
-      $("." + position + " .photo img").replaceWith("<img src=\"images/Katsushika_Hokusai.png\">");
-    } else {
-      $("." + position + " .photo span").replaceWith("<img src=\"images/Katsushika_Hokusai.png\">");   
-    }
-  } else if(preset == "TNY") {
-    if($("." + position + " .photo").has("img").length) {
-      $("." + position + " .photo img").replaceWith("<img src=\"images/Titania_New_Year.png\">");
-    } else {
-      $("." + position + " .photo span").replaceWith("<img src=\"images/Titania_New_Year.png\">");   
-    }
-  } else if(preset == "B") {
-    if($("." + position + " .photo").has("img").length) {
-      $("." + position + " .photo img").replaceWith("<img src=\"images/Belphegor.png\">");
-    } else {
-      $("." + position + " .photo span").replaceWith("<img src=\"images/Belphegor.png\">");   
-    }
-  } else if(preset == "S") {
-    if($("." + position + " .photo").has("img").length) {
-      $("." + position + " .photo img").replaceWith("<img src=\"images/Socrates.png\">");
-    } else {
-      $("." + position + " .photo span").replaceWith("<img src=\"images/Socrates.png\">");   
-    }
-  } else if(preset == "G") {
-    if($("." + position + " .photo").has("img").length) {
-      $("." + position + " .photo img").replaceWith("<img src=\"images/Guillotine.png\">");
-    } else {
-      $("." + position + " .photo span").replaceWith("<img src=\"images/Guillotine.png\">");   
-    }    
   } else {
     if($("." + position + " .photo").has("img").length.length) {
       $("." + position + " .photo img").replaceWith("<img src=\"images/Blank.png\">");
@@ -206,38 +136,26 @@ function removePhoto(position) {
 //Store inputted daemon data
 function storeSessionData(position) {
   
-  var pos;
-  
-  switch(position) {
-    case "Leader":
-      pos = "leader";
-      break;
-    case "Sub 1":
-      pos = "sub1";
-      break;
-    case "Sub 2":
-      pos = "sub2";
-      break;
-    case "Sub 3":
-      pos = "sub3";
-      break;
-    case "Helper":
-      pos = "helper";
-      break;
-  }
+  var readableToShortPosition = {
+    "Leader":"leader",
+    "Sub 1":"sub1",
+    "Sub 2":"sub2",
+    "Sub 3":"sub3",
+    "Helper":"helper"
+  };
 
-  sessionStorage.setItem(pos + "-role",$("#role").val());
-  sessionStorage.setItem(pos + "-type",$("#type").val());
-  sessionStorage.setItem(pos + "-atk",$("#atk").val());
-  sessionStorage.setItem(pos + "-hp",$("#hp").val());
-  sessionStorage.setItem(pos + "-skill-dmg",$("#skill-dmg").val());
-  sessionStorage.setItem(pos + "-targets",$("#targets").val());
-  sessionStorage.setItem(pos + "-skill-effect",$("#skill-effect").val());
-  sessionStorage.setItem(pos + "-effect-num-format",$("#effect-num-format").val());
-  sessionStorage.setItem(pos + "-effect-val",$("#effect-val").val());
-  sessionStorage.setItem(pos + "-bond-1",$("#bond-1").val());
-  sessionStorage.setItem(pos + "-bond-2",$("#bond-2").val());
-  sessionStorage.setItem(pos + "-bond-3",$("#bond-3").val());
+  sessionStorage.setItem(readableToShortPosition[position] + "-role",$("#role").val());
+  sessionStorage.setItem(readableToShortPosition[position] + "-type",$("#type").val());
+  sessionStorage.setItem(readableToShortPosition[position] + "-atk",$("#atk").val());
+  sessionStorage.setItem(readableToShortPosition[position] + "-hp",$("#hp").val());
+  sessionStorage.setItem(readableToShortPosition[position] + "-skill-dmg",$("#skill-dmg").val());
+  sessionStorage.setItem(readableToShortPosition[position] + "-targets",$("#targets").val());
+  sessionStorage.setItem(readableToShortPosition[position] + "-skill-effect",$("#skill-effect").val());
+  sessionStorage.setItem(readableToShortPosition[position] + "-effect-num-format",$("#effect-num-format").val());
+  sessionStorage.setItem(readableToShortPosition[position] + "-effect-val",$("#effect-val").val());
+  sessionStorage.setItem(readableToShortPosition[position] + "-bond-1",$("#bond-1").val());
+  sessionStorage.setItem(readableToShortPosition[position] + "-bond-2",$("#bond-2").val());
+  sessionStorage.setItem(readableToShortPosition[position] + "-bond-3",$("#bond-3").val());
 }
 
 //Populate modal with stored input values for daemons already added
@@ -731,38 +649,7 @@ $("#submit-seq").click(function(event) {
   var hasLeader = false;
   var hasHelper = false;  
   
-  if(sessionStorage.getItem("set-leader") == "true") {
-    fillModal("leader");
-    addDaemon("L");
-    clearModal();
-    numDaemons++;
-    hasLeader = true;
-  }
-  if(sessionStorage.getItem("set-sub1") == "true") {
-    fillModal("sub1");
-    addDaemon("S1");
-    clearModal();    
-    numDaemons++;
-  }
-  if(sessionStorage.getItem("set-sub2") == "true") {
-    fillModal("sub2");
-    addDaemon("S2");
-    clearModal();   
-    numDaemons++;
-  }
-  if(sessionStorage.getItem("set-sub3") == "true") {
-    fillModal("sub3");
-    addDaemon("S3");
-    clearModal();   
-    numDaemons++;
-  }
-  if(sessionStorage.getItem("set-helper") == "true") {
-    fillModal("helper");
-    addDaemon("H");
-    clearModal();  
-    numDaemons++;
-    hasHelper = true;
-  }  
+  prepareDaemons(numDaemons, hasLeader, hasHelper);
   
   if(numDaemons > 1 && hasLeader && hasHelper) {
     var seqInput = $("#skill-sequence").val().split(',');
@@ -788,6 +675,25 @@ $("#optimize-seq").click(function(event) {
   var hasLeader = false;
   var hasHelper = false;
   
+  prepareDaemons(numDaemons,hasLeader,hasHelper);
+  
+  if(numDaemons > 1 && hasLeader && hasHelper) {
+    var seqInput = $("#skill-sequence").val().split(',');
+    var origDmg = run_calc(seqInput);
+
+    var result = find_best(uniquePermute(seqInput));
+    var resultDmg = run_calc(result);
+
+    var dmgDiff = resultDmg - origDmg;
+    var dmgDiffString = (dmgDiff > 0)? "<span style='color:green'>+" + (dmgDiff|0).toString() + "</span>" : "<span style='color:red'>" + (dmgDiff|0).toString() + "</span>";
+
+    $(".result").html("Best Sequence: " + result.join(" ") + " <br>Expected Damage: " + (resultDmg|0) + " (" + dmgDiffString + ")");
+  } else {
+    $(".result").html("Error: Invalid Team. Team must have a leader and a helper.");
+  }
+})
+
+function prepareDaemons(numDaemons,hasLeader,hasHelper){
   if(sessionStorage.getItem("set-leader") == "true") {
     fillModal("leader");
     addDaemon("L");
@@ -819,20 +725,5 @@ $("#optimize-seq").click(function(event) {
     clearModal();     
     numDaemons++;
     hasHelper = true;
-  }    
-  
-  if(numDaemons > 1 && hasLeader && hasHelper) {
-    var seqInput = $("#skill-sequence").val().split(',');
-    var origDmg = run_calc(seqInput);
-
-    var result = find_best(uniquePermute(seqInput));
-    var resultDmg = run_calc(result);
-
-    var dmgDiff = resultDmg - origDmg;
-    var dmgDiffString = (dmgDiff > 0)? "<span style='color:green'>+" + (dmgDiff|0).toString() + "</span>" : "<span style='color:red'>" + (dmgDiff|0).toString() + "</span>";
-
-    $(".result").html("Best Sequence: " + result.join(" ") + " <br>Expected Damage: " + (resultDmg|0) + " (" + dmgDiffString + ")");
-  } else {
-    $(".result").html("Error: Invalid Team. Team must have a leader and a helper.");
-  }
-})
+  } 
+}

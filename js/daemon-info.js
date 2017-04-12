@@ -57,7 +57,7 @@ $(".sub3 .photo").click(function() {
   positionClick("sub3");    
 });
 $(".helper .photo").click(function() {
-  positionClick("sub4");
+  positionClick("helper");
 });
 
 function positionClick(position) {

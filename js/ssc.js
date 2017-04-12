@@ -43,6 +43,7 @@ function load_common_daemons() {
   //Socrates, Guillotine, 
   ranged = new DaemonRole("ranged", 0.4);
   melee = new DaemonRole("melee", 0.2);
+  healer = new DaemonRole("healer", 0.4);
   none = new DaemonRole("none", 0.1);
   healer = new DaemonRole("healer", 0.4);
   daemons["A1"] = new Daemon(ranged, "P", 0, 0, 3174, new Bonds(0,0,0), [], new Skill(new Effect("DMG_DEALT", 0.6), new Target("sort", null, 5, null)), []);

@@ -14,7 +14,31 @@ $(document).ready(function() {
   }
   if(sessionStorage.getItem("set-helper") == "true") {
     setDaemonOnRefresh("helper");
-  }  
+  }
+
+  $("#passive-target-type").change(function(event){
+    event.preventDefault();
+    hideAllPassiveSubSelects();
+    var value = $("#passive-target-type").val();
+
+    switch(value) {
+      case "role":
+      case "type":
+      case "names":
+        $("#passive-"+value).removeClass("hidden");
+        break;
+      case "priority":
+        $("#passive-role").removeClass("hidden");
+        $("#passive-number").removeClass("hidden");
+        break;
+      case "highest":
+      case "lowest":
+        $("#passive-sort").removeClass("hidden");
+      case "random":
+        $("#passive-number").removeClass("hidden");
+        break;
+    };
+  })
 })
 
 function setDaemonOnRefresh(position) {
@@ -504,6 +528,14 @@ function addPreset(preset) {
   sessionStorage.setItem("set-" + pos,"true");
   
   closeModal();
+}
+
+function hideAllPassiveSubSelects() {
+  var passiveSubSelectIDs = ["role", "sort", "names", "type", "number"];
+
+  passiveSubSelectIDs.forEach(function(subselect){
+    $("#passive-"+subselect).addClass("hidden");
+  });
 }
 
 $("#select-preset").click(function(event) {

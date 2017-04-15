@@ -133,10 +133,7 @@ function removePhoto(position) {
   $("." + position + " .photo").html("<span>+</span>");
 }
 
-//Store inputted daemon data
-function storeSessionData(position) {
-  
-  var readableToShortPosition = {
+var readableToShortPosition = {
     "Leader":"leader",
     "Sub 1":"sub1",
     "Sub 2":"sub2",
@@ -144,6 +141,8 @@ function storeSessionData(position) {
     "Helper":"helper"
   };
 
+//Store inputted daemon data
+function storeSessionData(position) {
   sessionStorage.setItem(readableToShortPosition[position] + "-role",$("#role").val());
   sessionStorage.setItem(readableToShortPosition[position] + "-type",$("#type").val());
   sessionStorage.setItem(readableToShortPosition[position] + "-atk",$("#atk").val());
@@ -497,36 +496,14 @@ function addPreset(preset) {
   }       
   
   var position = $(".position p").text();
+  var pos = readableToShortPosition[position];
+
+  storeSessionData(position);
+  printData(pos,preset);
+  sessionStorage.setItem(pos + "-preset",preset);
+  sessionStorage.setItem("set-" + pos,"true");
   
-  if(position == "Leader") {
-    storeSessionData(position);
-    printData("leader",preset);
-    sessionStorage.setItem("leader-preset",preset);
-    sessionStorage.setItem("set-leader","true");
-  } else if(position == "Sub 1") {
-    storeSessionData(position);
-    printData("sub1",preset);
-    sessionStorage.setItem("sub1-preset",preset);
-    sessionStorage.setItem("set-sub1","true");
-  } else if(position == "Sub 2") {
-    storeSessionData(position);
-    printData("sub2",preset);
-    sessionStorage.setItem("sub2-preset",preset);
-    sessionStorage.setItem("set-sub2","true");
-  } else if(position == "Sub 3") {
-    storeSessionData(position);
-    printData("sub3",preset);
-    sessionStorage.setItem("sub3-preset",preset);
-    sessionStorage.setItem("set-sub3","true");
-  } else {
-    storeSessionData(position);
-    printData("helper",preset);
-    sessionStorage.setItem("helper-preset",preset);
-    sessionStorage.setItem("set-helper","true");
-  }
-  
-  $(".modal").modal('hide');
-  $('#daemon-form').find('input,select').val('');
+  closeModal();
 }
 
 $("#select-preset").click(function(event) {
@@ -543,21 +520,11 @@ $("#remove-daemon").click(function(event) {
   event.preventDefault();
   
   var position = $(".position p").text();
-  
-  if(position == "Leader") {
-    removeDaemon("leader");
-  } else if(position == "Sub 1") {
-    removeDaemon("sub1");
-  } else if(position == "Sub 2") {
-    removeDaemon("sub2");
-  } else if(position == "Sub 3") {
-    removeDaemon("sub3");
-  } else {
-    removeDaemon("helper");
-  }
+  var pos = readableToShortPosition[position];
 
-  $(".modal").modal('hide');
-  $('#daemon-form').find('input,select').val('');    
+  removeDaemon(pos);
+
+  closeModal();    
 })
 
 //Re-parse modal form and reprints daemon data
@@ -565,46 +532,16 @@ $("#update-daemon").click(function(event) {
   event.preventDefault();
   
   var position = $(".position p").text();
-  
-  if(position == "Leader") {
-    storeSessionData(position);
-    if(sessionStorage.getItem("leader-preset") !== "none") {
-      printData("leader",sessionStorage.getItem("leader-preset"));
-    } else {
-      printData("leader","none");
-    }
-  } else if(position == "Sub 1") {
-    storeSessionData(position);
-    if(sessionStorage.getItem("sub1-preset") !== "none") {
-      printData("sub1",sessionStorage.getItem("sub1-preset"));
-    } else {
-      printData("sub1","none");
-    }
-  } else if(position == "Sub 2") {
-    storeSessionData(position);
-    if(sessionStorage.getItem("sub2-preset") !== "none") {
-      printData("sub2",sessionStorage.getItem("sub2-preset"));
-    } else {
-      printData("sub2","none");
-    }
-  } else if(position == "Sub 3") {
-    storeSessionData(position);
-    if(sessionStorage.getItem("sub3-preset") !== "none") {
-      printData("sub3",sessionStorage.getItem("sub3-preset"));
-    } else {
-      printData("sub3","none");
-    }
+  var pos = readableToShortPosition[position];
+
+  storeSessionData(position);
+  if(sessionStorage.getItem(pos+"-preset") !== "none") {
+    printData(pos,sessionStorage.getItem(pos+"-preset"));
   } else {
-    storeSessionData(position);
-    if(sessionStorage.getItem("helper-preset") !== "none") {
-      printData("helper",sessionStorage.getItem("helper-preset"));
-    } else {
-      printData("helper","none");
-    }
+    printData(pos,"none");
   }
   
-  $(".modal").modal('hide');
-  $('#daemon-form').find('input,select').val('');  
+  closeModal();  
 });
 
 //Stores data for newly added daemon and prints daemon's data to screen
@@ -612,34 +549,21 @@ $("#add-daemon").click(function(event) {
   event.preventDefault();
   
   var position = $(".position p").text();
+  var pos = readableToShortPosition[position];
   
-  storeSessionData(position);
+  storeSessionData(pos);
+
+  printData(pos,"none");
+  sessionStorage.setItem("set-"+pos,"true");
+  sessionStorage.setItem(pos+"-preset","none");
   
-  if(position == "Leader") {
-    printData("leader","none");
-    sessionStorage.setItem("set-leader","true");
-    sessionStorage.setItem("leader-preset","none");
-  } else if(position == "Sub 1") {
-    printData("sub1","none");
-    sessionStorage.setItem("set-sub1","true");
-    sessionStorage.setItem("sub1-preset","none");
-  } else if(position == "Sub 2") {
-    printData("sub2","none");
-    sessionStorage.setItem("set-sub2","true");
-    sessionStorage.setItem("sub2-preset","none");
-  } else if(position == "Sub 3") {
-    printData("sub3","none");
-    sessionStorage.setItem("set-sub3","true");
-    sessionStorage.setItem("sub3-preset","none");
-  } else {
-    printData("helper","none");
-    sessionStorage.setItem("set-helper","true");
-    sessionStorage.setItem("helper-preset","none");
-  } 
-  
+  closeModal();
+});
+
+function closeModal() {
   $(".modal").modal('hide');
   $('#daemon-form').find('input,select').val('');
-});
+}
 
 //Run calculations on the daemons submitted
 $("#submit-seq").click(function(event) {
@@ -685,6 +609,14 @@ $("#optimize-seq").click(function(event) {
   }
 })
 
+var shortPositionToInitial = {
+  "leader":"L",
+  "sub1":"S1",
+  "sub2":"S2",
+  "sub3":"S3",
+  "helper":"H"
+};
+
 function prepareDaemons(){
   var constraints = {
     numDaemons: 0,
@@ -692,37 +624,20 @@ function prepareDaemons(){
     hasHelper: false
   }
 
-  if(sessionStorage.getItem("set-leader") == "true") {
-    fillModal("leader");
-    addDaemon("L");
-    clearModal();
-    constraints.numDaemons++;
-    constraints.hasLeader = true;
-  }
-  if(sessionStorage.getItem("set-sub1") == "true") {
-    fillModal("sub1");
-    addDaemon("S1");
-    clearModal();    
-    constraints.numDaemons++;
-  }
-  if(sessionStorage.getItem("set-sub2") == "true") {
-    fillModal("sub2");
-    addDaemon("S2");
-    clearModal();    
-    constraints.numDaemons++;
-  }
-  if(sessionStorage.getItem("set-sub3") == "true") {
-    fillModal("sub3");
-    addDaemon("S3");
-    clearModal();    
-    constraints.numDaemons++;
-  }
-  if(sessionStorage.getItem("set-helper") == "true") {
-    fillModal("helper");
-    addDaemon("H");
-    clearModal();     
-    constraints.numDaemons++;
-    constraints.hasHelper = true;
-  } 
+  Object.keys(shortPositionToReadable).forEach(function(position) {
+    if(sessionStorage.getItem("set-"+position)) {
+      fillModal(position);
+      addDaemon(shortPositionToInitial[position]);
+      clearModal();
+      constraints.numDaemons++;
+      if(position == "leader") {
+        constraints.hasLeader = true;
+      }
+      if(position == "helper") {
+        constraints.hasHelper = true;
+      }
+    } 
+  });
+
   return constraints;
 }

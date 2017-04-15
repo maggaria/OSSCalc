@@ -1,3 +1,5 @@
+var passives = {};
+
 //Remember any set daemons on refresh
 $(document).ready(function() {
   if(sessionStorage.getItem("set-leader") == "true") {
@@ -16,29 +18,32 @@ $(document).ready(function() {
     setDaemonOnRefresh("helper");
   }
 
-  $("#passive-target-type").change(function(event){
+  for (var i = 1; i < 4; i++) {
+    $("#passive"+i+"-target-type").change(function(event){
     event.preventDefault();
     hideAllPassiveSubSelects();
-    var value = $("#passive-target-type").val();
+    var passive_num = this.id[7];
+    var value = $("#passive"+passive_num+"-target-type").val();
 
     switch(value) {
       case "role":
       case "type":
       case "names":
-        $("#passive-"+value).removeClass("hidden");
+        $("#passive"+passive_num+"-"+value).removeClass("hidden");
         break;
       case "priority":
-        $("#passive-role").removeClass("hidden");
-        $("#passive-number").removeClass("hidden");
+        $("#passive"+passive_num+"-role").removeClass("hidden");
+        $("#passive"+passive_num+"-number").removeClass("hidden");
         break;
       case "highest":
       case "lowest":
-        $("#passive-sort").removeClass("hidden");
+        $("#passive"+passive_num+"-sort").removeClass("hidden");
       case "random":
-        $("#passive-number").removeClass("hidden");
+        $("#passive"+passive_num+"-number").removeClass("hidden");
         break;
     };
   })
+  }
 })
 
 function setDaemonOnRefresh(position) {
@@ -531,11 +536,7 @@ function addPreset(preset) {
 }
 
 function hideAllPassiveSubSelects() {
-  var passiveSubSelectIDs = ["role", "sort", "names", "type", "number"];
-
-  passiveSubSelectIDs.forEach(function(subselect){
-    $("#passive-"+subselect).addClass("hidden");
-  });
+  $(".passive-sub").addClass("hidden");
 }
 
 $("#select-preset").click(function(event) {

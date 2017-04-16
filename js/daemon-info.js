@@ -1,5 +1,3 @@
-var passives = {};
-
 //Remember any set daemons on refresh
 $(document).ready(function() {
   if(sessionStorage.getItem("set-leader") == "true") {
@@ -18,33 +16,14 @@ $(document).ready(function() {
     setDaemonOnRefresh("helper");
   }
 
-  for (var i = 1; i < 4; i++) {
+  for (var i = 1; i <= 3; i++) {
     $("#passive"+i+"-target-type").change(function(event){
-    event.preventDefault();
-    hideAllPassiveSubSelects();
-    var passive_num = this.id[7];
-    var value = $("#passive"+passive_num+"-target-type").val();
-
-    switch(value) {
-      case "role":
-      case "type":
-      case "names":
-        $("#passive"+passive_num+"-"+value).removeClass("hidden");
-        break;
-      case "priority":
-        $("#passive"+passive_num+"-role").removeClass("hidden");
-        $("#passive"+passive_num+"-number").removeClass("hidden");
-        break;
-      case "highest":
-      case "lowest":
-        $("#passive"+passive_num+"-sort").removeClass("hidden");
-      case "random":
-        $("#passive"+passive_num+"-number").removeClass("hidden");
-        break;
-    };
-  })
+      event.preventDefault();
+      hideAllPassiveSubSelects();
+      showRelevantPassiveSubSelects(this.id[7]);
+    });
   }
-})
+});
 
 function setDaemonOnRefresh(position) {
   fillModal(position);
@@ -91,7 +70,7 @@ $(".helper .photo").click(function() {
 
 function positionClick(position) {
   $(".position").html("<label>Position</label><p>" + shortPositionToReadable[position] + "</p>");
-  if(sessionStorage.getItem("set-"+position)) {
+  if(sessionStorage.getItem("set-"+position) == "true") {
     populateModalWithDaemonData(position);
   } else {
     setupModalForNewDaemon();
@@ -172,34 +151,83 @@ var readableToShortPosition = {
 
 //Store inputted daemon data
 function storeSessionData(position) {
-  sessionStorage.setItem(readableToShortPosition[position] + "-role",$("#role").val());
-  sessionStorage.setItem(readableToShortPosition[position] + "-type",$("#type").val());
-  sessionStorage.setItem(readableToShortPosition[position] + "-atk",$("#atk").val());
-  sessionStorage.setItem(readableToShortPosition[position] + "-hp",$("#hp").val());
-  sessionStorage.setItem(readableToShortPosition[position] + "-skill-dmg",$("#skill-dmg").val());
-  sessionStorage.setItem(readableToShortPosition[position] + "-targets",$("#targets").val());
-  sessionStorage.setItem(readableToShortPosition[position] + "-skill-effect",$("#skill-effect").val());
-  sessionStorage.setItem(readableToShortPosition[position] + "-effect-num-format",$("#effect-num-format").val());
-  sessionStorage.setItem(readableToShortPosition[position] + "-effect-val",$("#effect-val").val());
-  sessionStorage.setItem(readableToShortPosition[position] + "-bond-1",$("#bond-1").val());
-  sessionStorage.setItem(readableToShortPosition[position] + "-bond-2",$("#bond-2").val());
-  sessionStorage.setItem(readableToShortPosition[position] + "-bond-3",$("#bond-3").val());
+  sessionStorage.setItem(position + "-role",$("#role").val());
+  sessionStorage.setItem(position + "-type",$("#type").val());
+  sessionStorage.setItem(position + "-atk",$("#atk").val());
+  sessionStorage.setItem(position + "-hp",$("#hp").val());
+  sessionStorage.setItem(position + "-skill-dmg",$("#skill-dmg").val());
+  sessionStorage.setItem(position + "-targets",$("#targets").val());
+  sessionStorage.setItem(position + "-skill-effect",$("#skill-effect").val());
+  sessionStorage.setItem(position + "-effect-num-format",$("#effect-num-format").val());
+  sessionStorage.setItem(position + "-effect-val",$("#effect-val").val());
+  sessionStorage.setItem(position + "-bond-1",$("#bond-1").val());
+  sessionStorage.setItem(position + "-bond-2",$("#bond-2").val());
+  sessionStorage.setItem(position + "-bond-3",$("#bond-3").val());
+
+  for(var i = 1; i <= 3; i++) {
+    sessionStorage.setItem(position + "-passive" + i + "-effect", $("#passive" + i + "-effect").val());
+    sessionStorage.setItem(position + "-passive" + i + "-effect-num-format", $("#passive" + i + "-effect-num-format").val());
+    sessionStorage.setItem(position + "-passive" + i + "-effect-val", $("#passive" + i + "-effect-val").val());
+    sessionStorage.setItem(position + "-passive" + i + "-target-type", $("#passive" + i + "-target-type").val());
+    sessionStorage.setItem(position + "-passive" + i + "-role", $("#passive" + i + "-role").val());
+    sessionStorage.setItem(position + "-passive" + i + "-target-sort", $("#passive" + i + "-target-sort").val());
+    sessionStorage.setItem(position + "-passive" + i + "-name", $("#passive" + i + "-name").val());
+    sessionStorage.setItem(position + "-passive" + i + "-type", $("#passive" + i + "-type").val());
+    sessionStorage.setItem(position + "-passive" + i + "-n-targets", $("#passive" + i + "-n-targets").val());
+  }
 }
 
 //Populate modal with stored input values for daemons already added
-function fillModal(pos) {
-  $("#role").val(sessionStorage.getItem(pos + "-role"));
-  $("#type").val(sessionStorage.getItem(pos + "-type"));
-  $("#atk").val(sessionStorage.getItem(pos + "-atk"));
-  $("#hp").val(sessionStorage.getItem(pos + "-hp"));
-  $("#skill-dmg").val(sessionStorage.getItem(pos + "-skill-dmg"));
-  $("#targets").val(sessionStorage.getItem(pos + "-targets"));
-  $("#skill-effect").val(sessionStorage.getItem(pos + "-skill-effect"));
-  $("#effect-num-format").val(sessionStorage.getItem(pos + "-effect-num-format"));
-  $("#effect-val").val(sessionStorage.getItem(pos + "-effect-val"));
-  $("#bond-1").val(sessionStorage.getItem(pos + "-bond-1"));
-  $("#bond-2").val(sessionStorage.getItem(pos + "-bond-2"));
-  $("#bond-3").val(sessionStorage.getItem(pos + "-bond-3"));
+function fillModal(position) {
+  $("#role").val(sessionStorage.getItem(position + "-role"));
+  $("#type").val(sessionStorage.getItem(position + "-type"));
+  $("#atk").val(sessionStorage.getItem(position + "-atk"));
+  $("#hp").val(sessionStorage.getItem(position + "-hp"));
+  $("#skill-dmg").val(sessionStorage.getItem(position + "-skill-dmg"));
+  $("#targets").val(sessionStorage.getItem(position + "-targets"));
+  $("#skill-effect").val(sessionStorage.getItem(position + "-skill-effect"));
+  $("#effect-num-format").val(sessionStorage.getItem(position + "-effect-num-format"));
+  $("#effect-val").val(sessionStorage.getItem(position + "-effect-val"));
+  $("#bond-1").val(sessionStorage.getItem(position + "-bond-1"));
+  $("#bond-2").val(sessionStorage.getItem(position + "-bond-2"));
+  $("#bond-3").val(sessionStorage.getItem(position + "-bond-3"));
+
+  hideAllPassiveSubSelects();
+
+  for(var i = 1; i <= 3; i++) {
+    $("#passive" + i + "-effect").val(sessionStorage.getItem(position + "-passive" + i + "-effect"));
+    $("#passive" + i + "-effect-num-format").val(sessionStorage.getItem(position + "-passive" + i + "-effect-num-format"));
+    $("#passive" + i + "-effect-val").val(sessionStorage.getItem(position + "-passive" + i + "-effect-val"));
+    $("#passive" + i + "-target-type").val(sessionStorage.getItem(position + "-passive" + i + "-target-type"));
+    $("#passive" + i + "-role").val(sessionStorage.getItem(position + "-passive" + i + "-role"));
+    $("#passive" + i + "-target-sort").val(sessionStorage.getItem(position + "-passive" + i + "-target-sort"));
+    $("#passive" + i + "-name").val(sessionStorage.getItem(position + "-passive" + i + "-name"));
+    $("#passive" + i + "-type").val(sessionStorage.getItem(position + "-passive" + i + "-type"));
+    $("#passive" + i + "-n-targets").val(sessionStorage.getItem(position + "-passive" + i + "-n-targets"));
+    showRelevantPassiveSubSelects(i);
+  }
+}
+
+function showRelevantPassiveSubSelects(passive_num) {
+  var value = $("#passive"+passive_num+"-target-type").val();
+
+  switch(value) {
+    case "role":
+    case "type":
+    case "name":
+      $("#passive"+passive_num+"-"+value+"-box").removeClass("hidden");
+      break;
+    case "priority":
+      $("#passive"+passive_num+"-role-box").removeClass("hidden");
+      $("#passive"+passive_num+"-number-box").removeClass("hidden");
+      break;
+    case "highest":
+    case "lowest":
+      $("#passive"+passive_num+"-sort-box").removeClass("hidden");
+    case "random":
+      $("#passive"+passive_num+"-number-box").removeClass("hidden");
+      break;
+    }
 }
 
 //Reset all form fields in modal
@@ -215,7 +243,19 @@ function clearModal() {
   $("#effect-val").val("");
   $("#bond-1").val("");
   $("#bond-2").val("");
-  $("#bond-3").val("");  
+  $("#bond-3").val(""); 
+
+  for(var i = 1; i <= 3; i++) {
+    $("#passive" + i + "-effect").val("");
+    $("#passive" + i + "-effect-num-format").val("");
+    $("#passive" + i + "-effect-val").val("");
+    $("#passive" + i + "-target-type").val("");
+    $("#passive" + i + "-role").val("");
+    $("#passive" + i + "-target-sort").val("");
+    $("#passive" + i + "-name").val("");
+    $("#passive" + i + "-type").val("");
+    $("#passive" + i + "-n-targets").val("");
+  } 
 }
 
 //Parse form inputs and return html for printing data
@@ -386,18 +426,95 @@ function addDaemon(position) {
   
   if(sortOrder !== "HIGH_ATK") {
     sortOrder = null;
-  }  
+  } 
+
+  var passives = getPassivesFromForm();
   
   if(skillEffect == "") {
-    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], null, []);
+    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], null, passives);
   } else {
-    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], new Skill(new Effect(skillEffect,effectVal), new Target("sort", null, targets, sortOrder)), []);
+    daemons[position] = new Daemon(role, type, $("#atk").val(), $("#hp").val(), skillDmg, new Bonds(bond1,bond2,bond3), [], new Skill(new Effect(skillEffect,effectVal), new Target("sort", null, targets, sortOrder)), passives);
   }
+}
+
+function getPassivesFromForm() {
+  var passives = [];
+  for (var i = 1; i <= 3; i++) {
+    var effectType = null;
+    var effectVal = null;
+    var thisEffect = null;
+    var targetType = null;
+    var targetVal = null;
+    var targetNumTargets = null;
+    var targetSortOrder = null;
+    var thisTarget = null;
+    //TODO: add null checks for other required values.
+    if($("#passive" + i + "-effect").val() == "") {
+      break;
+    } else {
+      effectType = $("#passive" + i + "-effect").val();
+      effectVal = $("#passive" + i + "-effect-num-format").val() == "int"? parseInt($("#passive" + i + "-effect-val").val()) : parseInt($("#passive" + i + "-effect-val").val())/100;
+      thisEffect = new Effect(effectType, effectVal);
+      targetType = $("#passive" + i + "-target-type").val();
+
+      switch(targetType) {
+        case "role":
+        case "type":
+          targetVal = $("#passive" + i + "-" + targetType).val();
+          break;
+        case "priority":
+          targetVal = "sort";
+          targetSortOrder = $("#passive" + i + "-role").val();
+          targetNumTargets = $("#passive" + i + "-n-targets").val();
+          break;
+        case "highest":
+          targetSortOrder = "HIGH_" + $("#passive" + i + "-target-sort").toUpperCase();
+        case "lowest":
+          targetSortOrder = "LOW_" + $("#passive" + i + "-target-sort").toUpperCase();
+        case "random":
+          targetVal = "sort";
+          targetNumTargets = $("#passive" + i + "-n-targets").val();
+      }
+
+      thisTarget = new Target(targetType, targetVal, targetNumTargets, targetSortOrder);
+
+      passives.push(new Skill(thisEffect,thisTarget));
+    }
+  }
+
+  return passives;
 }
 
 //Remove data for daemon at specified position and indicate that position is empty
 function removeDaemon(position) {
   sessionStorage.setItem("set-" + position, "false");
+
+  sessionStorage.setItem(position + "-role","");
+  sessionStorage.setItem(position + "-type","");
+  sessionStorage.setItem(position + "-atk","");
+  sessionStorage.setItem(position + "-hp","");
+  sessionStorage.setItem(position + "-skill-dmg","");
+  sessionStorage.setItem(position + "-targets","");
+  sessionStorage.setItem(position + "-skill-effect","");
+  sessionStorage.setItem(position + "-effect-num-format","");
+  sessionStorage.setItem(position + "-effect-val","");
+  sessionStorage.setItem(position + "-bond-1","");
+  sessionStorage.setItem(position + "-bond-2","");
+  sessionStorage.setItem(position + "-bond-3","");
+
+  for(var i = 1; i <= 3; i++) {
+    sessionStorage.setItem(position + "-passive" + i + "-effect", "");
+    sessionStorage.setItem(position + "-passive" + i + "-effect-num-format", "");
+    sessionStorage.setItem(position + "-passive" + i + "-effect-val", "");
+    sessionStorage.setItem(position + "-passive" + i + "-target-type", "");
+    sessionStorage.setItem(position + "-passive" + i + "-role", "");
+    sessionStorage.setItem(position + "-passive" + i + "-target-sort", "");
+    sessionStorage.setItem(position + "-passive" + i + "-name", "");
+    sessionStorage.setItem(position + "-passive" + i + "-type", "");
+    sessionStorage.setItem(position + "-passive" + i + "-n-targets", "");
+  }
+
+
   removeData(position);
 }
 
@@ -417,6 +534,14 @@ function addPreset(preset) {
     $("#bond-1").val("");
     $("#bond-2").val("");
     $("#bond-3").val("");
+    $("#passive1-effect").val("CRIT_RATE");
+    $("#passive1-effect-num-format").val("percent");
+    $("#passive1-effect-val").val(21);
+    $("#passive1-target-type").val("self");
+    $("#passive2-effect").val("CRIT_DMG");
+    $("#passive2-effect-num-format").val("percent");
+    $("#passive2-effect-val").val(50);
+    $("#passive2-target-type").val("self");
   }
   if(preset == "A") {
     $("#role").val("ranged");
@@ -446,7 +571,7 @@ function addPreset(preset) {
     $("#effect-val").val(43);
     $("#bond-1").val("");
     $("#bond-2").val("");
-    $("#bond-3").val("");    
+    $("#bond-3").val("");
   }  
   if(preset == "K") {
     $("#role").val("ranged");
@@ -461,7 +586,13 @@ function addPreset(preset) {
     $("#effect-val").val(55);
     $("#bond-1").val("");
     $("#bond-2").val("");
-    $("#bond-3").val("");     
+    $("#bond-3").val("");
+    $("#passive1-effect").val("CRIT_DMG");
+    $("#passive1-effect-num-format").val("percent");
+    $("#passive1-effect-val").val(30);
+    $("#passive1-target-type").val("highest");
+    $("#passive1-target-sort").val("atk");
+    $("#passive1-n-targets").val(2);     
   }
   if(preset == "TNY") {
     $("#role").val("ranged");
@@ -476,7 +607,12 @@ function addPreset(preset) {
     $("#effect-val").val("");
     $("#bond-1").val("");
     $("#bond-2").val("");
-    $("#bond-3").val("");     
+    $("#bond-3").val("");
+    $("#passive1-effect").val("CRIT_DMG");
+    $("#passive1-effect-num-format").val("percent");
+    $("#passive1-effect-val").val(20);
+    $("#passive1-target-type").val("type");
+    $("#passive1-type").val("P");
   } 
   if(preset == "B") {
     $("#role").val("ranged");
@@ -491,7 +627,11 @@ function addPreset(preset) {
     $("#effect-val").val("");
     $("#bond-1").val("");
     $("#bond-2").val("");
-    $("#bond-3").val("");     
+    $("#bond-3").val("");
+    $("#passive1-effect").val("DMG_INCREASE");
+    $("#passive1-effect-num-format").val("percent");
+    $("#passive1-effect-val").val(20);
+    $("#passive1-target-type").val("self");  
   }   
   if(preset == "S") {
     $("#role").val("ranged");
@@ -506,7 +646,11 @@ function addPreset(preset) {
     $("#effect-val").val(1220);
     $("#bond-1").val("");
     $("#bond-2").val("");
-    $("#bond-3").val("");     
+    $("#bond-3").val("");
+    $("#passive1-effect").val("CRIT_RATE");
+    $("#passive1-effect-num-format").val("percent");
+    $("#passive1-effect-val").val(3);
+    $("#passive1-target-type").val("all");     
   }     
   if(preset == "G") {
     $("#role").val("ranged");
@@ -521,13 +665,17 @@ function addPreset(preset) {
     $("#effect-val").val("");
     $("#bond-1").val("");
     $("#bond-2").val("");
-    $("#bond-3").val("");     
+    $("#bond-3").val("");
+    $("#passive1-effect").val("DMG_INCREASE");
+    $("#passive1-effect-num-format").val("percent");
+    $("#passive1-effect-val").val(15);
+    $("#passive1-target-type").val("self");   
   }       
   
   var position = $(".position p").text();
   var pos = readableToShortPosition[position];
 
-  storeSessionData(position);
+  storeSessionData(pos);
   printData(pos,preset);
   sessionStorage.setItem(pos + "-preset",preset);
   sessionStorage.setItem("set-" + pos,"true");
@@ -567,7 +715,7 @@ $("#update-daemon").click(function(event) {
   var position = $(".position p").text();
   var pos = readableToShortPosition[position];
 
-  storeSessionData(position);
+  storeSessionData(pos);
   if(sessionStorage.getItem(pos+"-preset") !== "none") {
     printData(pos,sessionStorage.getItem(pos+"-preset"));
   } else {
@@ -658,7 +806,7 @@ function prepareDaemons(){
   }
 
   Object.keys(shortPositionToReadable).forEach(function(position) {
-    if(sessionStorage.getItem("set-"+position)) {
+    if(sessionStorage.getItem("set-"+position) == "true") {
       fillModal(position);
       addDaemon(shortPositionToInitial[position]);
       clearModal();

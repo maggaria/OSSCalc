@@ -2,18 +2,15 @@
 Skill sequence calculator written in JS
 ## Current Capabilities
 * Supports calculation of % debuffs and buffs to skill and crits
-* Supports pure skill DMG (no poison/burn/auto)
-## To Do
-* Support calculation of flat increases
-* Accommodate more effect types
-* UI layer
+* Considers pure skill DMG (no poison/burn/auto-attack)
+* Have you ever wondered whether it's better to alternate your Amanojaku with Titanium Elf or use each skill type one at a time? Click 'Optimize', and the numbers will crunch.
+## Future Improvements
+* Move to a JS framework which will allow us more flexibility.
+* More preset options.
+* Optimize for a given shard cost.
 
-## Usage Samples
-### Creating Daemons
-    daemons["A1"] = new Daemon(ranged, 3174, new Bonds(0,0,0), [], [new Effect("DMG_DEALT", 0.6)]);
-### Calculating Approximate Damage
-    run_calc(["F", "K", "F", "A2", "A2", "T3", "T3", "B1"])
-### Find the best skill sequence given a set of skills
-    find_best(uniquePermute(["T2","T2","T3","T3","F","K","F","B1"]))
-
-    
+## FAQ
+### How do I account for reserves or special bonds?
+Add reserves as abilities to any daemon on the team, and add special bonds as an ability to the daemon who would be affected by that bond.
+### The card's leader skill is active even though it's not in the leader position!
+Remove the passive associated with the leader skill. We currently do not support abilities based on team position.

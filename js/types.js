@@ -26,6 +26,11 @@ class Daemon {
   use_skill(skill, daemons) {
     if(skill){
       switch(skill.target.target_type){
+        case "all":
+          Object.keys(daemons).forEach(function(daemon){
+            daemons[daemon].add_active_effect(skill.effect);
+          });
+          break;
         case "self":
           this.add_active_effect(skill.effect);
           break;

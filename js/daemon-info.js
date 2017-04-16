@@ -70,6 +70,7 @@ $(".helper .photo").click(function() {
 
 function positionClick(position) {
   $(".position").html("<label>Position</label><p>" + shortPositionToReadable[position] + "</p>");
+  clearModal();
   if(sessionStorage.getItem("set-"+position) == "true") {
     populateModalWithDaemonData(position);
   } else {
@@ -88,7 +89,6 @@ function setupModalForNewDaemon() {
   $("#add-daemon").show();
   $("#remove-daemon").hide();
   $("#update-daemon").hide();
-  clearModal();
 }
 
 //Print inputted data and images at specified position

@@ -1,0 +1,75 @@
+<div class="row">
+	<div class="form-group col-xs-12 col-md-4">
+	  <label>Ability Effect</label>
+	  <select id="effect" class="form-control">
+	    <option value="">-- Select --</option>
+	    <option value="DMG_INCREASE">Increase Ally Atk</option>
+	    <option value="DMG_DEALT">Reduce Enemy Def (Percent)</option>
+	    <option value="CONST_DMG_DEALT">Reduce Enemy Def (Integer)</option>
+	    <option value="CRIT_RATE">Crit Rate Buff</option>
+	    <option value="CRIT_DMG">Crit DMG Buff</option>
+	  </select>       
+	</div>
+	<div class="form-group col-xs-12 col-md-4">
+	  <label>Effect Num Format</label>
+	  <select id="effect-num-format" class="form-control">
+	    <option value="">-- Select --</option>
+	    <option value="int">Integer</option>
+	    <option value="percent">Percent</option>
+	  </select>
+	</div>
+	<div class="form-group col-xs-12 col-md-4">
+	  <label>Effect Value</label><input id="effect-val" class="form-control" type="number" name="effect-val" placeholder="0"> 
+	</div>
+</div>
+<div class="row">
+	<div class="form-group col-xs-12 col-md-4">
+	  <label>Target Type</label>
+	  <select id="target-type" class="form-control" onchange={{action 'showFields' value="target.value"}}>
+	    <option value="">-- Select --</option>
+	    <option value="self">Self</option>
+	    <option value="all">All</option>
+	    <option value="role">Role</option>
+	    <option value="type">Type</option>
+	    <option value="name">Name</option>
+	    <option value="priority">Priority</option>
+	    <option value="highest">Highest</option>
+	    <option value="lowest">Lowest</option>
+	    <option value="random">Random</option>
+	  </select>       
+	</div>
+	<div id="role-box" class="{{if hideRole "hidden"}} form-group col-xs-12 col-md-4 passive-sub">
+	  <label>&nbsp;</label>
+	  <select id="role" class="form-control">
+	    <option value="">-- Select --</option>
+	    <option value="melee">Melee</option>
+	    <option value="ranged">Ranged</option>
+	    <option value="healer">Healer</option>
+	  </select> 
+	</div>
+	<div id="sort-box" class="{{if hideSortBox "hidden"}} form-group col-xs-12 col-md-4 passive-sub">
+	  <label>&nbsp;</label>
+	  <select id="target-sort" class="form-control">
+	    <option value="">-- Select --</option>
+	    <option value="atk">ATK</option>
+	    <option value="hp">HP</option>
+	  </select> 
+	</div>
+	<div id="name-box" class="{{if hideNameBox "hidden"}}  form-group col-xs-12 col-md-4 passive-sub">
+	  <label>&nbsp;</label>
+	  <input id="name" class="form-control" placeholder="e.g. H,S1,S3">
+	</div>
+	<div id="type-box" class="{{if hideTypeBox "hidden"}}  form-group col-xs-12 col-md-4 passive-sub">
+	  <label>&nbsp;</label>
+	  <select id="type" class="form-control">
+	    <option value="">-- Select --</option>
+	    <option value="A">Anima</option>
+	    <option value="D">Divina</option>
+	    <option value="P">Phantasma</option>
+	  </select> 
+	</div>
+	<div id="number-box" class="{{if hideNumBox "hidden"}}  form-group col-xs-12 col-md-4 passive-sub">
+	  <label># Targets</label>
+	  <input id="n-targets" class="form-control" type="number" name="n-targets" placeholder="0"> 
+	</div>
+</div>

@@ -8,6 +8,11 @@ module.exports = function(defaults) {
 
   app.import('bower_components/bootstrap/dist/css/bootstrap.min.css');
   app.import('bower_components/bootstrap/dist/js/bootstrap.min.js');
+  app.import('bower_components/bootstrap/fonts/glyphicons-halflings-regular.woff', {
+  destDir: 'fonts'
+});
+
   app.import('bower_components/jquery/dist/jquery.min.js'); 
+
   return app.toTree();
 };

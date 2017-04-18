@@ -1,0 +1,212 @@
+<h1><span class="label label-info">BETA</span> Otogi Skill Sequence Calculator</h1>
+  
+  <div class="team row">
+     {{team-position}}  
+  </div>
+
+  <div class="sequence">
+    <form>
+      <label>Skill Sequence</label>
+      <p>L = Leader, S1 = Sub 1, S2 = Sub 2, S3 = Sub 3, H = Helper</p>
+      <p>Separate each daemon with a comma (ie: L,H,S1,H,S2)</p>
+      <input id="skill-sequence" class="form-control" type="text">
+      <div class="row">
+        <button id="submit-seq" type="submit" class="btn btn-primary action-button" value="submit">Run Sequence</button>
+        <button id="optimize-seq" class="btn btn-primary action-button">Optimize</button>
+      </div>
+    </form>
+  </div>
+  
+  <div class="result">
+  </div>
+  
+  <div class="about" data-toggle="modal" data-target="#about-blurb"><h1><span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span></h1></div>
+  
+  {{about-modal}}
+
+  <div class="modal fade" id="daemon-form">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          <h4 class="modal-title">Enter Daemon Info</h4>
+        </div>
+        <form>
+        <div class="modal-body">
+          <div class="row">
+            <div class="position col-md-12">
+              <label>Position</label><p>Leader</p>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+            	{{daemon-form/select-presets}}
+            </div>
+            <div class="col-md-3"></div>
+          </div>
+          <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+              <button id="select-preset" type="submit" class="btn btn-primary" value="submit">Add Preset</button>
+            </div>
+            <div class="col-md-3"></div>
+          </div>
+          <div class="row">
+            <div class="col-md-12">
+              <h5>OR</h5>
+            </div>
+          </div>
+          <div class="panel-group" id="accordion">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                    Basic Stats</a>
+                </h4>
+              </div>
+              <div id="collapse1" class="panel-collapse collapse in">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="form-group col-xs-12 col-md-3">
+                      {{daemon-form/select-role}}
+                    </div>          
+                    <div class="form-group col-xs-12 col-md-3">
+                      {{daemon-form/select-daemon-type}}
+                    </div>
+                    <div class="form-group col-xs-12 col-md-3">
+                      <label>ATK</label>
+                      {{input id="atk" type="number" class="form-control" name="atk" placeholder="0"}}
+                    </div>
+                    <div class="form-group col-xs-12 col-md-3">
+                      <label>HP</label>
+                      {{input id="hp" type="number" class="form-control" name="hp" placeholder="0"}}
+                    </div>            
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">
+                    Skill</a>
+                </h4>
+              </div>
+              <div id="collapse2" class="panel-collapse collapse">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="form-group col-xs-12 col-md-4">
+                      <label>Skill DMG</label>
+                      {{input id="skill-dmg" type="number" class="form-control" name="skill-dmg" placeholder="0"}}
+                    </div>
+                    <div class="form-group col-xs-12 col-md-4">
+                      {{daemon-form/select-num-targets}}
+                    </div>
+                    <div class="form-group col-xs-12 col-md-4">
+                      {{daemon-form/select-target-condition}}               
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="form-group col-xs-12 col-md-4">
+                      {{daemon-form/select-skill-effect}}   
+                    </div>
+                    <div class="form-group col-xs-12 col-md-4">
+                      {{daemon-form/select-skill-effect-num-format}}
+                    </div>
+                    <div class="form-group col-xs-12 col-md-4">
+                      <label>Effect Value</label>
+                      {{input id="effect-val" class="form-control" type="number" name="effect-val" placeholder="0"}}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h4 class="panel-title">
+                  <a data-toggle="collapse" data-parent="#accordion" href="#collapse3">
+                    Bonds</a>
+                </h4>
+              </div>
+              <div id="collapse3" class="panel-collapse collapse">
+                <div class="panel-body">
+                  <div class="row">
+                    <div class="form-group col-xs-6 col-md-4">
+                      <label>First Bond</label>
+                        {{daemon-form/select-bonds}}            
+                    </div>
+                    <div class="form-group col-xs-6 col-md-4">
+                      <label>Second Bond</label>
+                        {{daemon-form/select-bonds}}            
+                    </div>
+                    <div class="form-group col-xs-6 col-md-4">
+                      <label>Third Bond</label>
+                        {{daemon-form/select-bonds}}                   
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h4 class="panel-title">
+                <a data-toggle="collapse" data-parent="#accordion" href="#collapse4">
+                  Abilities</a>
+              </h4>
+            </div>
+            <div id="collapse4" class="panel-collapse collapse">
+              <div class="panel-body">
+                <div class="card text-center">
+                  <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                      <li class="nav-item active">
+                        <a data-toggle="tab" class="nav-link" href="#p1">Ability 1</a>
+                      </li>
+                      <li class="nav-item">
+                        <a data-toggle="tab" class="nav-link" href="#p2">Ability 2</a>
+                      </li>
+                      <li class="nav-item">
+                        <a data-toggle="tab" class="nav-link" href="#p3">Ability 3</a>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="tab-content">
+                    <div id="p1" class="tab-pane fade in active">
+                      <div class="card-block">
+                        <div id="passive1">
+                        	{{daemon-form/abilities-form}}
+                      	</div>
+                      </div>
+                    </div>
+                    <div id="p2" class="tab-pane fade">
+                      <div class="card-block">
+                        <div id="passive2">
+                        	{{daemon-form/abilities-form}}
+                      	</div>
+                      </div>
+
+                    </div>
+                    <div id="p3" class="tab-pane fade">
+                      <div class="card-block">
+                      	<div id="passive3">
+                      		{{daemon-form/abilities-form}}
+                  			</div>
+                  		</div>
+                		</div>
+                  </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>      
+        </div>
+        <div class="modal-footer">
+          <button id="add-daemon" type="submit" class="btn btn-primary" value="submit">Add Daemon</button>
+          <button id="remove-daemon" type="submit" class="btn btn-danger" value="submit">Remove Daemon</button>
+          <button id="update-daemon" type="submit" class="btn btn-primary" value="submit">Update Daemon</button>
+        </div>
+        </form>
+      </div>
+    </div>
+  </div>-->

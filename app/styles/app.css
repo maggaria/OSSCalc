@@ -6,9 +6,11 @@ body {
   text-align: center; }
 
 .team {
-  display: flex;
   width: 50%;
   margin: 2em auto !important; }
+.team .ember-view {
+  display: flex;
+}
   @media only screen and (max-width: 500px) {
     .team {
       width: 100%;
@@ -17,6 +19,9 @@ body {
 .daemon {
   margin: 1em 0;
   flex-basis: 20%; }
+.daemon h4 {
+  text-transform: capitalize;
+}
   @media only screen and (max-width: 500px) {
     .daemon {
       flex-basis: 33.33%;
@@ -64,8 +69,12 @@ img:hover {
 #select-preset {
   margin: 1em 0; }
 
-#edit-daemon {
+#update-daemon {
   display: none; }
+
+#remove-daemon {
+  display: none;;
+}
 
 #submit-seq {
   margin-top: 1em; }

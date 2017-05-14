@@ -468,9 +468,11 @@ function getPassivesFromForm() {
           targetNumTargets = $("#passive" + i + "-n-targets").val();
           break;
         case "highest":
-          targetSortOrder = "HIGH_" + $("#passive" + i + "-target-sort").toUpperCase();
+          var highSortOrder = "#passive" + i + "-target-sort";
+          targetSortOrder = "HIGH_" + highSortOrder.toUpperCase();
         case "lowest":
-          targetSortOrder = "LOW_" + $("#passive" + i + "-target-sort").toUpperCase();
+          var lowSortOrder = "#passive" + i + "-target-sort";
+          targetSortOrder = "LOW_" + lowSortOrder.toUpperCase();
         case "random":
           targetVal = "sort";
           targetNumTargets = $("#passive" + i + "-n-targets").val();
